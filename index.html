@@ -1926,8 +1926,15 @@
                 const data = await response.json();
                 
                 if (data.worker) {
+                    // Contact info
                     document.getElementById('profilePhone').value = data.worker.phone || '';
                     document.getElementById('profileEmail').value = data.worker.email || '';
+                    
+                    // Address
+                    document.getElementById('profileStreet').value = data.worker.address || '';
+                    document.getElementById('profileCity').value = data.worker.city || '';
+                    document.getElementById('profileState').value = data.worker.state || '';
+                    document.getElementById('profileZip').value = data.worker.zip || '';
                     
                     // Stats
                     document.getElementById('statJobs').textContent = data.worker.total_jobs_completed || 0;
@@ -1945,9 +1952,17 @@
                     }
                     
                     // Document status
-                    if (data.worker.insurance_expires_at) {
+                    if (data.worker.drivers_license_url) {
+                        document.getElementById('idStatus').textContent = 'Uploaded';
+                        document.getElementById('idStatus').className = 'document-status verified';
+                    }
+                    if (data.worker.insurance_doc_url || data.worker.insurance_expires_at) {
                         document.getElementById('insuranceStatus').textContent = 'Verified';
                         document.getElementById('insuranceStatus').className = 'document-status verified';
+                    }
+                    if (data.worker.w9_url) {
+                        document.getElementById('w9Status').textContent = 'Uploaded';
+                        document.getElementById('w9Status').className = 'document-status verified';
                     }
                     if (data.worker.ica_signed_at) {
                         document.getElementById('icaStatus').textContent = 'Signed';
@@ -1961,17 +1976,115 @@
 
         // Save Profile
         async function saveProfile() {
-            showToast('Profile saved');
+            const phone = document.getElementById('profilePhone').value;
+            const email = document.getElementById('profileEmail').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/crew/save-profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        phone: phone,
+                        email: email
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Profile saved');
+                } else {
+                    showToast(data.message || 'Failed to save', true);
+                }
+            } catch (error) {
+                showToast('Error saving profile', true);
+            }
         }
 
         // Save Address
         async function saveAddress() {
-            showToast('Address saved');
+            const street = document.getElementById('profileStreet').value;
+            const city = document.getElementById('profileCity').value;
+            const state = document.getElementById('profileState').value;
+            const zip = document.getElementById('profileZip').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/crew/save-address`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        street: street,
+                        city: city,
+                        state: state,
+                        zip: zip
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Address saved');
+                } else {
+                    showToast(data.message || 'Failed to save', true);
+                }
+            } catch (error) {
+                showToast('Error saving address', true);
+            }
         }
 
         // Document upload placeholder
         function uploadDocument(type) {
-            showToast('Document upload coming soon');
+            // Create hidden file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = type === 'id' ? 'image/*' : '.pdf,image/*';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                showToast('Uploading...');
+                
+                try {
+                    const base64 = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    const response = await fetch(`${API_BASE}/crew/upload-document`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            worker_id: currentWorker.id,
+                            doc_type: type,
+                            file_data: base64,
+                            filename: file.name
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast('Document uploaded');
+                        // Update status display
+                        const statusMap = {
+                            'id': 'idStatus',
+                            'insurance': 'insuranceStatus',
+                            'w9': 'w9Status',
+                            'ica': 'icaStatus'
+                        };
+                        const statusEl = document.getElementById(statusMap[type]);
+                        if (statusEl) {
+                            statusEl.textContent = 'Uploaded';
+                            statusEl.className = 'document-status verified';
+                        }
+                    } else {
+                        showToast(data.message || 'Upload failed', true);
+                    }
+                } catch (error) {
+                    showToast('Error uploading', true);
+                }
+            };
+            
+            input.click();
         }
 
         // Stripe setup placeholder
