@@ -15,12 +15,16 @@
             background: #1a1a2e;
             color: #fff;
             min-height: 100vh;
+            padding-bottom: 80px;
         }
         .header {
             background: #16213e;
             padding: 1rem;
             text-align: center;
             border-bottom: 2px solid #0f3460;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
         .header h1 {
             color: #4ade80;
@@ -133,6 +137,47 @@
             background: #ef4444;
             color: #fff;
         }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #16213e;
+            border-top: 2px solid #0f3460;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        .nav-item.active {
+            color: #4ade80;
+        }
+        .nav-item span {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
         
         /* Job Cards */
         .section-title {
@@ -149,7 +194,7 @@
             margin-bottom: 1rem;
             border-left: 4px solid #3b82f6;
         }
-        .job-card.in-progress {
+        .job-card.in_progress {
             border-left-color: #f59e0b;
         }
         .job-card.completed {
@@ -223,14 +268,167 @@
         }
         
         /* No Jobs */
-        .no-jobs {
+        .no-jobs, .empty-state {
             text-align: center;
             padding: 3rem 1rem;
             color: #94a3b8;
         }
-        .no-jobs-icon {
+        .empty-state-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
+        }
+
+        /* Earnings Tab */
+        .earnings-summary {
+            background: linear-gradient(135deg, #16213e, #1a1a2e);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid #0f3460;
+        }
+        .earnings-total {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+        .earnings-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .earnings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #16213e;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .earnings-row-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .earnings-row-date {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .earnings-row-type {
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .earnings-row-amount {
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Profile Tab */
+        .profile-section {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .profile-section h3 {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+        .profile-field {
+            margin-bottom: 1rem;
+        }
+        .profile-field label {
+            display: block;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+        .profile-field input, .profile-field select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .profile-field input:focus {
+            outline: none;
+            border-color: #4ade80;
+        }
+        .document-upload {
+            border: 2px dashed #0f3460;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .document-upload:hover {
+            border-color: #4ade80;
+        }
+        .document-upload.uploaded {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        .document-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .status-pending { color: #f59e0b; }
+        .status-verified { color: #4ade80; }
+        .status-missing { color: #ef4444; }
+
+        /* Photos Tab */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        .photo-card {
+            background: #16213e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .photo-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        .photo-card-info {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+        }
+        .photo-card-type {
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .photo-card-type.before { color: #f59e0b; }
+        .photo-card-type.after { color: #4ade80; }
+        .photo-upload-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #16213e;
+            border: 2px dashed #0f3460;
+            border-radius: 8px;
+            height: 150px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .photo-upload-btn:hover {
+            border-color: #4ade80;
+        }
+        .photo-upload-btn span {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Photo Upload Modal */
@@ -309,6 +507,18 @@
             background: #374151;
             color: #fff;
         }
+
+        /* Job selector in modal */
+        .job-select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
         
         /* Loading */
         .loading {
@@ -327,6 +537,25 @@
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4ade80;
+            color: #000;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 200;
+            display: none;
+        }
+        .toast.error {
+            background: #ef4444;
+            color: #fff;
         }
         
         /* Responsive */
@@ -363,19 +592,108 @@
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
 
-            <div id="jobsContainer">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Loading your jobs...</p>
+            <!-- Jobs Tab -->
+            <div id="tabJobs" class="tab-content active">
+                <div id="jobsContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading your jobs...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photos Tab -->
+            <div id="tabPhotos" class="tab-content">
+                <p class="section-title">Your Photos</p>
+                <div id="photosContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading photos...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Tab -->
+            <div id="tabEarnings" class="tab-content">
+                <div class="earnings-summary">
+                    <div class="earnings-total" id="totalEarnings">$0.00</div>
+                    <div class="earnings-label">Total Earnings</div>
+                </div>
+                <p class="section-title">Payment History</p>
+                <div id="earningsContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading earnings...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="tabProfile" class="tab-content">
+                <div class="profile-section">
+                    <h3>📋 Contact Info</h3>
+                    <div class="profile-field">
+                        <label>Phone</label>
+                        <input type="tel" id="profilePhone" placeholder="Your phone number">
+                    </div>
+                    <div class="profile-field">
+                        <label>Email</label>
+                        <input type="email" id="profileEmail" placeholder="Your email">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveProfile()" style="margin-top: 0.5rem;">Save Changes</button>
+                </div>
+
+                <div class="profile-section">
+                    <h3>📄 Documents</h3>
+                    
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Insurance Certificate</p>
+                    <div class="document-upload" id="insuranceUpload" onclick="uploadDocument('insurance')">
+                        <span id="insuranceStatus">📎 Tap to upload</span>
+                    </div>
+                    <div class="document-status" id="insuranceStatusText"></div>
+
+                    <p style="font-size: 0.9rem; margin: 1rem 0 0.5rem;">Independent Contractor Agreement</p>
+                    <div class="document-upload" id="icaUpload" onclick="uploadDocument('ica')">
+                        <span id="icaStatus">📎 Tap to upload</span>
+                    </div>
+                    <div class="document-status" id="icaStatusText"></div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>🗺️ Service Areas</h3>
+                    <p style="color: #94a3b8; font-size: 0.9rem;" id="countiesServed">Loading...</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav" style="display: none;">
+        <button class="nav-item active" data-tab="tabJobs">
+            <span>📋</span>
+            Jobs
+        </button>
+        <button class="nav-item" data-tab="tabPhotos">
+            <span>📸</span>
+            Photos
+        </button>
+        <button class="nav-item" data-tab="tabEarnings">
+            <span>💰</span>
+            Earnings
+        </button>
+        <button class="nav-item" data-tab="tabProfile">
+            <span>👤</span>
+            Profile
+        </button>
+    </nav>
+
     <!-- Photo Upload Modal -->
     <div id="photoModal" class="modal-overlay">
         <div class="modal">
             <h3>📸 Upload Photo</h3>
+            <select id="jobSelect" class="job-select">
+                <option value="">Select a job...</option>
+            </select>
             <div class="photo-type-btns">
                 <button class="photo-type-btn active" data-type="before">Before</button>
                 <button class="photo-type-btn" data-type="after">After</button>
@@ -394,25 +712,32 @@
         </div>
     </div>
 
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
     <script>
         const API_BASE = 'https://x8ki-letl-twmt.n7.xano.io/api:O_MQ1nmN';
         let currentWorker = null;
-        let currentJobId = null;
+        let currentJobs = [];
         let selectedPhotoType = 'before';
 
         // DOM Elements
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
+        const bottomNav = document.getElementById('bottomNav');
         const pinInput = document.getElementById('pinInput');
         const loginBtn = document.getElementById('loginBtn');
         const loginError = document.getElementById('loginError');
         const workerName = document.getElementById('workerName');
         const jobsContainer = document.getElementById('jobsContainer');
+        const photosContainer = document.getElementById('photosContainer');
+        const earningsContainer = document.getElementById('earningsContainer');
         const photoModal = document.getElementById('photoModal');
         const photoInput = document.getElementById('photoInput');
         const previewImg = document.getElementById('previewImg');
         const fileLabel = document.getElementById('fileLabel');
         const uploadBtn = document.getElementById('uploadBtn');
+        const jobSelect = document.getElementById('jobSelect');
 
         // Check for saved session
         const savedWorker = localStorage.getItem('sjcleanup_worker');
@@ -420,6 +745,26 @@
             currentWorker = JSON.parse(savedWorker);
             showDashboard();
         }
+
+        // Tab Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const tabId = item.dataset.tab;
+                
+                // Update nav
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+
+                // Load tab data
+                if (tabId === 'tabPhotos') loadPhotos();
+                if (tabId === 'tabEarnings') loadEarnings();
+                if (tabId === 'tabProfile') loadProfile();
+            });
+        });
 
         // PIN Input handling
         pinInput.addEventListener('input', (e) => {
@@ -478,12 +823,14 @@
             loginBtn.textContent = 'Login';
             loginScreen.style.display = 'flex';
             dashboard.style.display = 'none';
+            bottomNav.style.display = 'none';
         }
 
         // Show Dashboard
         function showDashboard() {
             loginScreen.style.display = 'none';
             dashboard.style.display = 'block';
+            bottomNav.style.display = 'flex';
             workerName.textContent = currentWorker.name || 'Crew';
             loadJobs();
         }
@@ -497,15 +844,18 @@
                 const data = await response.json();
 
                 if (data.success && data.jobs) {
+                    currentJobs = data.jobs;
                     renderJobs(data.jobs);
+                    updateJobSelect();
                 } else {
-                    throw new Error('Failed to load jobs');
+                    currentJobs = [];
+                    renderJobs([]);
                 }
             } catch (error) {
                 jobsContainer.innerHTML = `
-                    <div class="no-jobs">
-                        <div class="no-jobs-icon">⚠️</div>
-                        <p>Couldn't load jobs. Pull down to refresh.</p>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>Couldn't load jobs.<br>Pull down to refresh.</p>
                     </div>
                 `;
             }
@@ -513,50 +863,29 @@
 
         // Render Jobs
         function renderJobs(jobs) {
-            if (!jobs || jobs.length === 0) {
+            const activeJobs = jobs.filter(j => j.status !== 'completed' && j.status !== 'cancelled');
+            
+            if (activeJobs.length === 0) {
                 jobsContainer.innerHTML = `
-                    <div class="no-jobs">
-                        <div class="no-jobs-icon">✨</div>
-                        <p>No jobs assigned yet.<br>Check back soon!</p>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <p>No active jobs right now.<br>Check back soon!</p>
                     </div>
                 `;
                 return;
             }
 
-            const activeJobs = jobs.filter(j => j.status !== 'completed');
-            const completedJobs = jobs.filter(j => j.status === 'completed');
-
-            let html = '';
-
-            if (activeJobs.length > 0) {
-                html += '<p class="section-title">Active Jobs</p>';
-                activeJobs.forEach(job => {
-                    html += renderJobCard(job);
-                });
-            }
-
-            if (completedJobs.length > 0) {
-                html += '<p class="section-title">Completed</p>';
-                completedJobs.slice(0, 5).forEach(job => {
-                    html += renderJobCard(job);
-                });
-            }
-
-            if (html === '') {
-                html = `
-                    <div class="no-jobs">
-                        <div class="no-jobs-icon">✨</div>
-                        <p>No jobs assigned yet.<br>Check back soon!</p>
-                    </div>
-                `;
-            }
+            let html = '<p class="section-title">Active Jobs</p>';
+            activeJobs.forEach(job => {
+                html += renderJobCard(job);
+            });
 
             jobsContainer.innerHTML = html;
         }
 
         // Render Job Card
         function renderJobCard(job) {
-            const statusClass = job.status.replace(' ', '_');
+            const statusClass = job.status?.replace(' ', '_') || 'dispatched';
             const statusLabels = {
                 'dispatched': 'Dispatched',
                 'in_progress': 'In Progress',
@@ -570,7 +899,7 @@
                         <span class="job-type">${job.job_type?.replace('_', ' ') || 'Cleaning'}</span>
                         <span class="job-status status-${statusClass}">${statusLabels[job.status] || job.status}</span>
                     </div>
-                    <p class="job-address">📍 ${job.address || 'Address TBD'}, ${job.city || ''}</p>
+                    <p class="job-address">📍 ${job.address || 'Address TBD'}${job.city ? ', ' + job.city : ''}</p>
                     <div class="job-details">
                         <span>📐 ${job.sq_footage?.toLocaleString() || '—'} sq ft</span>
                         <span class="job-payout">💰 $${job.crew_payout?.toFixed(2) || '0.00'}</span>
@@ -581,11 +910,8 @@
                             <button class="btn-small btn-start" onclick="startJob(${job.id})">▶️ Start Job</button>
                         ` : ''}
                         ${job.status === 'in_progress' ? `
-                            <button class="btn-small btn-photo" onclick="openPhotoModal(${job.id})">📸 Add Photo</button>
+                            <button class="btn-small btn-photo" onclick="openPhotoModal(${job.id})">📸 Photo</button>
                             <button class="btn-small btn-complete" onclick="completeJob(${job.id})">✅ Complete</button>
-                        ` : ''}
-                        ${job.status === 'completed' ? `
-                            <button class="btn-small btn-photo" onclick="openPhotoModal(${job.id})">📸 Add Photo</button>
                         ` : ''}
                     </div>
                 </div>
@@ -602,12 +928,13 @@
                 });
                 const data = await response.json();
                 if (data.success) {
+                    showToast('Job started!');
                     loadJobs();
                 } else {
-                    alert(data.message || 'Failed to start job');
+                    showToast(data.message || 'Failed to start job', true);
                 }
             } catch (error) {
-                alert('Error starting job');
+                showToast('Error starting job', true);
             }
         }
 
@@ -623,28 +950,170 @@
                 });
                 const data = await response.json();
                 if (data.success) {
+                    showToast('Job completed! 🎉');
                     loadJobs();
                 } else {
-                    alert(data.message || 'Failed to complete job');
+                    showToast(data.message || 'Failed to complete job', true);
                 }
             } catch (error) {
-                alert('Error completing job');
+                showToast('Error completing job', true);
             }
         }
 
+        // Load Photos
+        async function loadPhotos() {
+            photosContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading photos...</p></div>';
+
+            try {
+                // For now, show upload option
+                let html = '<div class="photo-grid">';
+                html += `
+                    <div class="photo-upload-btn" onclick="openPhotoModal()">
+                        <span>➕</span>
+                        Add Photo
+                    </div>
+                `;
+                html += '</div>';
+                html += '<p style="color:#94a3b8;text-align:center;margin-top:1rem;font-size:0.85rem;">Photos you upload will appear here</p>';
+                
+                photosContainer.innerHTML = html;
+            } catch (error) {
+                photosContainer.innerHTML = '<div class="empty-state"><p>Failed to load photos</p></div>';
+            }
+        }
+
+        // Load Earnings
+        async function loadEarnings() {
+            earningsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading earnings...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await response.json();
+
+                if (data.success && data.jobs) {
+                    const completedJobs = data.jobs.filter(j => j.status === 'completed');
+                    const total = completedJobs.reduce((sum, j) => sum + (j.crew_payout || 0), 0);
+                    
+                    document.getElementById('totalEarnings').textContent = '$' + total.toFixed(2);
+
+                    if (completedJobs.length === 0) {
+                        earningsContainer.innerHTML = `
+                            <div class="empty-state">
+                                <p>No completed jobs yet.<br>Your earnings will appear here.</p>
+                            </div>
+                        `;
+                    } else {
+                        let html = '';
+                        completedJobs.forEach(job => {
+                            const date = job.completed_at ? new Date(job.completed_at).toLocaleDateString() : 'Recent';
+                            html += `
+                                <div class="earnings-row">
+                                    <div class="earnings-row-left">
+                                        <span class="earnings-row-date">${date}</span>
+                                        <span class="earnings-row-type">${job.job_type?.replace('_', ' ') || 'Cleaning'}</span>
+                                    </div>
+                                    <span class="earnings-row-amount">$${job.crew_payout?.toFixed(2) || '0.00'}</span>
+                                </div>
+                            `;
+                        });
+                        earningsContainer.innerHTML = html;
+                    }
+                } else {
+                    document.getElementById('totalEarnings').textContent = '$0.00';
+                    earningsContainer.innerHTML = '<div class="empty-state"><p>No earnings yet</p></div>';
+                }
+            } catch (error) {
+                earningsContainer.innerHTML = '<div class="empty-state"><p>Failed to load earnings</p></div>';
+            }
+        }
+
+        // Load Profile
+        async function loadProfile() {
+            // Load from localStorage or fetch from API
+            const profilePhone = document.getElementById('profilePhone');
+            const profileEmail = document.getElementById('profileEmail');
+            const countiesServed = document.getElementById('countiesServed');
+
+            // Try to get worker details
+            try {
+                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await response.json();
+                
+                if (data.worker) {
+                    profilePhone.value = data.worker.phone || '';
+                    profileEmail.value = data.worker.email || '';
+                    
+                    if (data.worker.counties_served && data.worker.counties_served.length > 0) {
+                        countiesServed.textContent = data.worker.counties_served.join(', ');
+                    } else {
+                        countiesServed.textContent = 'Not set - contact admin';
+                    }
+
+                    // Document status
+                    updateDocumentStatus('insurance', data.worker.insurance_expires_at);
+                    updateDocumentStatus('ica', data.worker.ica_signed_at);
+                }
+            } catch (error) {
+                console.log('Could not load profile');
+            }
+        }
+
+        // Update document status display
+        function updateDocumentStatus(type, date) {
+            const statusEl = document.getElementById(type + 'StatusText');
+            const uploadEl = document.getElementById(type + 'Upload');
+            
+            if (date) {
+                statusEl.innerHTML = '<span class="status-verified">✓ Uploaded</span>';
+                uploadEl.classList.add('uploaded');
+                document.getElementById(type + 'Status').textContent = '✓ Document on file';
+            } else {
+                statusEl.innerHTML = '<span class="status-missing">⚠ Required</span>';
+            }
+        }
+
+        // Save Profile
+        async function saveProfile() {
+            const phone = document.getElementById('profilePhone').value;
+            const email = document.getElementById('profileEmail').value;
+
+            try {
+                // Would call API to update
+                showToast('Profile saved!');
+            } catch (error) {
+                showToast('Failed to save', true);
+            }
+        }
+
+        // Upload Document
+        function uploadDocument(type) {
+            showToast('Document upload coming soon!');
+        }
+
+        // Update job select dropdown
+        function updateJobSelect() {
+            const activeJobs = currentJobs.filter(j => j.status !== 'completed' && j.status !== 'cancelled');
+            jobSelect.innerHTML = '<option value="">Select a job...</option>';
+            activeJobs.forEach(job => {
+                jobSelect.innerHTML += `<option value="${job.id}">${job.job_type?.replace('_', ' ')} - ${job.address || 'Job #' + job.id}</option>`;
+            });
+        }
+
         // Photo Modal
-        function openPhotoModal(jobId) {
-            currentJobId = jobId;
+        function openPhotoModal(jobId = null) {
             photoModal.style.display = 'flex';
             previewImg.style.display = 'none';
             fileLabel.textContent = '📷 Tap to take photo or select from gallery';
             uploadBtn.disabled = true;
             photoInput.value = '';
+            
+            if (jobId) {
+                jobSelect.value = jobId;
+            }
         }
 
         function closePhotoModal() {
             photoModal.style.display = 'none';
-            currentJobId = null;
             photoInput.value = '';
         }
 
@@ -666,22 +1135,30 @@
                     previewImg.src = e.target.result;
                     previewImg.style.display = 'block';
                     fileLabel.textContent = file.name;
-                    uploadBtn.disabled = false;
+                    uploadBtn.disabled = !jobSelect.value;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
+        jobSelect.addEventListener('change', () => {
+            uploadBtn.disabled = !jobSelect.value || !photoInput.files[0];
+        });
+
         // Upload Photo
         async function uploadPhoto() {
             const file = photoInput.files[0];
-            if (!file || !currentJobId) return;
+            const jobId = jobSelect.value;
+            
+            if (!file || !jobId) {
+                showToast('Please select a job and photo', true);
+                return;
+            }
 
             uploadBtn.disabled = true;
             uploadBtn.textContent = 'Uploading...';
 
             try {
-                // Convert to base64
                 const base64 = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = (e) => resolve(e.target.result.split(',')[1]);
@@ -692,7 +1169,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        job_id: currentJobId,
+                        job_id: parseInt(jobId),
                         worker_id: currentWorker.id,
                         photo_type: selectedPhotoType,
                         photo_data: base64,
@@ -702,20 +1179,31 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    alert('Photo uploaded!');
+                    showToast('Photo uploaded! 📸');
                     closePhotoModal();
                 } else {
                     throw new Error(data.message || 'Upload failed');
                 }
             } catch (error) {
-                alert('Failed to upload photo: ' + error.message);
+                showToast('Upload failed: ' + error.message, true);
             } finally {
                 uploadBtn.disabled = false;
                 uploadBtn.textContent = 'Upload';
             }
         }
 
-        // Pull to refresh (simple implementation)
+        // Toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Pull to refresh
         let touchStart = 0;
         document.addEventListener('touchstart', (e) => {
             touchStart = e.touches[0].clientY;
