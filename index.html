@@ -1038,31 +1038,150 @@
             }
         }
 
+        // Xano File Upload
+        const XANO_INSTANCE = 'x8ki-letl-twmt.n7.xano.io';
+        let currentJobId = null;
+
+        async function uploadToXano(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const res = await fetch(`https://${XANO_INSTANCE}/api:O_MQ1nmN/upload/file`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.path) {
+                    return `https://${XANO_INSTANCE}${data.path}`;
+                }
+                throw new Error('No file path returned');
+            } catch (e) {
+                console.error('Upload error:', e);
+                throw e;
+            }
+        }
+
         // Photo/Video Upload
         function uploadPhoto(type) {
+            if (!selectedJob && currentJobs.length === 0) {
+                showToast('No active job - photos will be saved when you have a job', 'error');
+                return;
+            }
             currentUploadType = type;
+            currentJobId = selectedJob?.id || currentJobs[0]?.id;
             document.getElementById('photoInput').click();
         }
 
         function uploadVideo(type) {
+            if (!selectedJob && currentJobs.length === 0) {
+                showToast('No active job - videos will be saved when you have a job', 'error');
+                return;
+            }
             currentUploadType = type + '_video';
+            currentJobId = selectedJob?.id || currentJobs[0]?.id;
             document.getElementById('videoInput').click();
         }
 
-        function handlePhotoUpload(e) {
+        async function handlePhotoUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-            // TODO: Upload to Xano file storage
-            showToast(`${currentUploadType} photo selected - upload integration pending`);
+            
+            showToast('Uploading photo...');
+            
+            try {
+                // Get GPS from image if available
+                let lat = 0, lng = 0;
+                
+                // Upload to Xano
+                const fileUrl = await uploadToXano(file);
+                
+                // Save to job_photos
+                const res = await fetch(`${API_BASE}/worker/upload-photo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: currentJobId,
+                        worker_id: currentWorker.id,
+                        photo_type: currentUploadType,
+                        file_url: fileUrl,
+                        original_filename: file.name,
+                        file_size: file.size,
+                        gps_latitude: lat,
+                        gps_longitude: lng,
+                        is_video: false
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Photo uploaded successfully', 'success');
+                    updatePhotoCount(currentUploadType);
+                } else {
+                    showToast(data.message || 'Failed to save photo', 'error');
+                }
+            } catch (err) {
+                showToast('Upload failed: ' + err.message, 'error');
+            }
+            
             e.target.value = '';
         }
 
-        function handleVideoUpload(e) {
+        async function handleVideoUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-            // TODO: Upload to Xano file storage
-            showToast(`${currentUploadType} selected - upload integration pending`);
+            
+            if (file.size > 100 * 1024 * 1024) {
+                showToast('Video too large (max 100MB)', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            showToast('Uploading video... This may take a moment');
+            
+            try {
+                const fileUrl = await uploadToXano(file);
+                
+                const res = await fetch(`${API_BASE}/worker/upload-photo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: currentJobId,
+                        worker_id: currentWorker.id,
+                        photo_type: currentUploadType.replace('_video', ''),
+                        file_url: fileUrl,
+                        original_filename: file.name,
+                        file_size: file.size,
+                        gps_latitude: 0,
+                        gps_longitude: 0,
+                        is_video: true
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Video uploaded successfully', 'success');
+                } else {
+                    showToast(data.message || 'Failed to save video', 'error');
+                }
+            } catch (err) {
+                showToast('Upload failed: ' + err.message, 'error');
+            }
+            
             e.target.value = '';
+        }
+
+        function updatePhotoCount(type) {
+            // Update the photo count display
+            const countEl = document.getElementById(type + 'Count');
+            if (countEl) {
+                const current = parseInt(countEl.textContent) || 0;
+                const newCount = current + 1;
+                countEl.textContent = `${newCount}/4 minimum`;
+                if (newCount >= 4) {
+                    countEl.className = 'photo-count complete';
+                }
+            }
         }
 
         // Document Upload
@@ -1071,11 +1190,37 @@
             document.getElementById('documentInput').click();
         }
 
-        function handleDocumentUpload(e) {
+        async function handleDocumentUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-            // TODO: Upload to Xano file storage
-            showToast(`${currentDocType} document selected - upload integration pending`);
+            
+            showToast('Uploading document...');
+            
+            try {
+                const fileUrl = await uploadToXano(file);
+                
+                const res = await fetch(`${API_BASE}/crew/upload-document`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        doc_type: currentDocType,
+                        file_url: fileUrl,
+                        filename: file.name
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Document uploaded', 'success');
+                    loadProfile(); // Refresh to show updated status
+                } else {
+                    showToast(data.message || 'Failed to save', 'error');
+                }
+            } catch (err) {
+                showToast('Upload failed: ' + err.message, 'error');
+            }
+            
             e.target.value = '';
         }
 
