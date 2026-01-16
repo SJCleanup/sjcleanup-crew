@@ -2,1475 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SJCleanup Crew Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SJCleanup - Crew Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --orange: #f97316;
-            --orange-dark: #ea580c;
-            --orange-light: rgba(249, 115, 22, 0.1);
-            --bg-primary: #09090b;
-            --bg-secondary: #18181b;
-            --bg-tertiary: #27272a;
-            --text-primary: #fafafa;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
-            --border: #27272a;
-            --border-light: #3f3f46;
-            --success: #22c55e;
-            --success-light: rgba(34, 197, 94, 0.1);
-            --warning: #eab308;
-            --warning-light: rgba(234, 179, 8, 0.1);
-            --error: #ef4444;
-            --error-light: rgba(239, 68, 68, 0.1);
-            --blue: #3b82f6;
-            --blue-light: rgba(59, 130, 246, 0.1);
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.5;
-        }
-        
-        /* Header */
-        .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .header-content {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-weight: 700;
-            font-size: 1.125rem;
-            color: var(--orange);
-            letter-spacing: -0.025em;
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .worker-name {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 0.4rem 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
-        .logout-btn:hover {
-            border-color: var(--error);
-            color: var(--error);
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        
-        /* Login */
-        .login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 85vh;
-            padding: 1.5rem;
-        }
-        .login-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 380px;
-        }
-        .login-logo {
-            color: var(--orange);
-            font-weight: 700;
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.025em;
-        }
-        .login-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        .login-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-        }
-        .form-label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-bottom: 0.4rem;
-            color: var(--text-secondary);
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            transition: border-color 0.2s;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: var(--orange);
-        }
-        .form-input::placeholder {
-            color: var(--text-muted);
-        }
-        .btn {
-            width: 100%;
-            padding: 0.75rem 1.25rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-primary {
-            background: var(--orange);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: var(--orange-dark);
-        }
-        .btn-primary:disabled {
-            background: var(--bg-tertiary);
-            color: var(--text-muted);
-            cursor: not-allowed;
-        }
-        .error-msg {
-            color: var(--error);
-            font-size: 0.8rem;
-            margin-top: 0.75rem;
-            display: none;
-        }
-        
-        /* Dashboard */
-        .dashboard {
-            display: none;
-        }
-        
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 1.25rem;
-        }
-        .tab {
-            flex: 1;
-            padding: 0.6rem 0.5rem;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 7px;
-            transition: all 0.2s;
-        }
-        .tab:hover {
-            color: var(--text-primary);
-        }
-        .tab.active {
-            background: var(--orange);
-            color: white;
-        }
-        
-        /* Tab Content */
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* Section Headers */
-        .section-header {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin: 1.25rem 0 0.75rem;
-        }
-        .section-header:first-child {
-            margin-top: 0;
-        }
-        
-        /* Cards */
-        .card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        /* Job Cards */
-        .job-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-        .job-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
-        }
-        .job-type {
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-transform: capitalize;
-        }
-        .job-id {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .status-badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.2rem 0.6rem;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-        .status-dispatched {
-            background: var(--blue-light);
-            color: var(--blue);
-        }
-        .status-in_progress {
-            background: var(--orange-light);
-            color: var(--orange);
-        }
-        .status-pending_review {
-            background: var(--warning-light);
-            color: var(--warning);
-        }
-        .status-completed {
-            background: var(--success-light);
-            color: var(--success);
-        }
-        
-        .job-address {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
-        }
-        .job-address-icon {
-            color: var(--text-muted);
-            flex-shrink: 0;
-        }
-        
-        .job-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-        .job-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-        .job-payout {
-            color: var(--success);
-            font-weight: 600;
-        }
-        
-        .job-notes {
-            background: var(--bg-primary);
-            border-radius: 6px;
-            padding: 0.75rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            border-left: 3px solid var(--orange);
-        }
-        .job-notes-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            font-size: 0.75rem;
-        }
-        
-        .job-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .btn-action {
-            flex: 1;
-            min-width: 100px;
-            padding: 0.65rem 0.75rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-start {
-            background: var(--orange);
-            color: white;
-        }
-        .btn-start:hover {
-            background: var(--orange-dark);
-        }
-        .btn-complete {
-            background: var(--success);
-            color: white;
-        }
-        .btn-complete:hover {
-            background: #16a34a;
-        }
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        .btn-secondary:hover {
-            background: var(--border-light);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-        }
-        .btn-outline:hover {
-            border-color: var(--text-secondary);
-            color: var(--text-primary);
-        }
-        
-        /* Checklist */
-        .checklist {
-            background: var(--bg-primary);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .checklist-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-        .checklist-item.checked {
-            color: var(--success);
-            text-decoration: line-through;
-        }
-        .checkbox {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border-light);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .checklist-item.checked .checkbox {
-            background: var(--success);
-            border-color: var(--success);
-        }
-        .checkbox-check {
-            display: none;
-            color: white;
-            font-size: 0.7rem;
-        }
-        .checklist-item.checked .checkbox-check {
-            display: block;
-        }
-        
-        /* Timer */
-        .timer-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .timer-display {
-            font-size: 1.5rem;
-            font-weight: 700;
-            font-family: 'SF Mono', Monaco, monospace;
-            color: var(--text-primary);
-        }
-        .timer-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-        .timer-btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-        .timer-btn.start {
-            background: var(--success);
-            color: white;
-        }
-        .timer-btn.pause {
-            background: var(--warning);
-            color: black;
-        }
-        .timer-btn.running {
-            background: var(--error);
-            color: white;
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1.5rem;
-            color: var(--text-secondary);
-        }
-        .empty-state-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-        .empty-state-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.35rem;
-        }
-        .empty-state-text {
-            font-size: 0.85rem;
-        }
-        
-        /* Photos Tab */
-        .ai-notice {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .ai-notice-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--orange-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .ai-notice-text {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        .ai-notice-text strong {
-            color: var(--text-primary);
-        }
-        
-        .photo-section {
-            margin-bottom: 1.5rem;
-        }
-        .photo-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        .photo-section-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .photo-count {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-        }
-        .photo-item {
-            aspect-ratio: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .photo-item-badge {
-            position: absolute;
-            bottom: 4px;
-            left: 4px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .photo-item-badge.before {
-            background: var(--warning);
-            color: black;
-        }
-        .photo-item-badge.after {
-            background: var(--success);
-            color: white;
-        }
-        .photo-item-badge.damage {
-            background: var(--error);
-            color: white;
-        }
-        .photo-upload-card {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-secondary);
-            border: 1px dashed var(--border-light);
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            font-size: 0.7rem;
-        }
-        .photo-upload-card:hover {
-            border-color: var(--orange);
-            color: var(--orange);
-        }
-        .photo-upload-icon {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .video-section {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.25rem;
-            text-align: center;
-        }
-        .video-coming-soon {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        .video-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
-        
-        /* Earnings Tab */
-        .earnings-summary {
-            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        .earnings-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-        .earnings-total {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--success);
-            letter-spacing: -0.025em;
-        }
-        .earnings-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-        }
-        
-        .payment-info {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        .payment-info-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .payment-info-text {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-        
-        .stripe-setup {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .stripe-setup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        .stripe-setup-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .stripe-status {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-        }
-        .stripe-status.connected {
-            background: var(--success-light);
-            color: var(--success);
-        }
-        .stripe-status.pending {
-            background: var(--warning-light);
-            color: var(--warning);
-        }
-        .stripe-status.not-connected {
-            background: var(--error-light);
-            color: var(--error);
-        }
-        .stripe-setup-text {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-        .btn-stripe {
-            width: 100%;
-            padding: 0.75rem;
-            background: #635bff;
-            color: white;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .btn-stripe:hover {
-            background: #5147e5;
-        }
-        
-        .earnings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .earnings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.875rem 1rem;
-        }
-        .earnings-row-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .earnings-row-type {
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: capitalize;
-        }
-        .earnings-row-date {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .earnings-row-right {
-            text-align: right;
-        }
-        .earnings-row-amount {
-            font-weight: 600;
-            color: var(--success);
-        }
-        .earnings-row-status {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        
-        /* Profile Tab */
-        .profile-section {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-        .profile-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .profile-section-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .profile-field {
-            margin-bottom: 0.875rem;
-        }
-        .profile-field:last-child {
-            margin-bottom: 0;
-        }
-        .profile-field label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 0.35rem;
-        }
-        .profile-field input {
-            width: 100%;
-            padding: 0.65rem 0.875rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-        .profile-field input:focus {
-            outline: none;
-            border-color: var(--orange);
-        }
-        
-        .document-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .document-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: var(--bg-primary);
-            border-radius: 8px;
-        }
-        .document-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .document-name {
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .document-status {
-            font-size: 0.7rem;
-            margin-top: 0.15rem;
-        }
-        .document-status.verified {
-            color: var(--success);
-        }
-        .document-status.pending {
-            color: var(--warning);
-        }
-        .document-status.missing {
-            color: var(--error);
-        }
-        .btn-upload-sm {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-        .btn-upload-sm:hover {
-            background: var(--border-light);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
-        .stat-card {
-            background: var(--bg-primary);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .stat-value.orange {
-            color: var(--orange);
-        }
-        .stat-value.success {
-            color: var(--success);
-        }
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-top: 0.25rem;
-        }
-        
-        .service-areas {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .service-area-tag {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            padding: 0.4rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .modal {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            width: 100%;
-            max-width: 400px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-        }
-        .modal-title {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 0.25rem;
-        }
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 0.4rem;
-        }
-        .form-select {
-            width: 100%;
-            padding: 0.7rem 0.875rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-        .form-select:focus {
-            outline: none;
-            border-color: var(--orange);
-        }
-        .form-textarea {
-            width: 100%;
-            padding: 0.7rem 0.875rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            resize: vertical;
-            min-height: 80px;
-        }
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--orange);
-        }
-        
-        .photo-type-toggle {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .photo-type-btn {
-            flex: 1;
-            padding: 0.65rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .photo-type-btn.active {
-            border-color: var(--orange);
-            color: var(--orange);
-            background: var(--orange-light);
-        }
-        
-        .file-drop {
-            border: 1px dashed var(--border-light);
-            border-radius: 8px;
-            padding: 2rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            transition: all 0.2s;
-            margin-bottom: 1rem;
-        }
-        .file-drop:hover {
-            border-color: var(--orange);
-            color: var(--orange);
-        }
-        .file-input {
-            display: none;
-        }
-        .preview-img {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.25rem;
-        }
-        .modal-actions .btn {
-            flex: 1;
-        }
-        .btn-cancel {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        .btn-cancel:hover {
-            background: var(--border-light);
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            z-index: 200;
-            display: none;
-        }
-        .toast.success {
-            border-color: var(--success);
-        }
-        .toast.error {
-            border-color: var(--error);
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-        .spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--border);
-            border-top-color: var(--orange);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .loading-text {
-            font-size: 0.85rem;
-            margin-top: 0.75rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 400px) {
-            .job-meta {
-                gap: 0.5rem;
-            }
-            .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .tab-active { background: #3b82f6; color: white; }
+        .job-card { transition: transform 0.2s; }
+        .job-card:active { transform: scale(0.98); }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header class="header" id="mainHeader" style="display: none;">
-        <div class="header-content">
-            <div class="logo">SJCleanup</div>
-            <div class="header-right">
-                <span class="worker-name" id="headerWorkerName"></span>
-                <button class="logout-btn" onclick="logout()">Log out</button>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="w-full max-w-sm">
+            <h1 class="text-3xl font-bold text-center mb-2">🧹 SJCleanup</h1>
+            <p class="text-gray-400 text-center mb-8">Crew Portal</p>
+            
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                <label class="block text-sm text-gray-400 mb-2">Enter your PIN</label>
+                <input type="tel" id="pinInput" maxlength="6" 
+                    class="w-full bg-gray-700 border-2 border-gray-600 rounded-xl px-4 py-4 text-2xl text-center tracking-widest focus:border-blue-500 focus:outline-none"
+                    placeholder="••••••" inputmode="numeric" pattern="[0-9]*">
+                <button onclick="login()" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl mt-4 transition">
+                    Sign In
+                </button>
+                <p id="loginError" class="text-red-400 text-sm text-center mt-3 hidden"></p>
             </div>
         </div>
-    </header>
+    </div>
 
-    <div class="container">
-        <!-- Login Screen -->
-        <div id="loginScreen" class="login-screen">
-            <div class="login-box">
-                <div class="login-logo">SJCleanup</div>
-                <div class="login-title">Crew Portal</div>
-                <div class="login-subtitle">Enter your PIN to access your dashboard</div>
-                <label class="form-label">6-digit PIN</label>
-                <input type="text" id="pinInput" class="form-input" maxlength="6" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*">
-                <button id="loginBtn" class="btn btn-primary" disabled>Sign In</button>
-                <p id="loginError" class="error-msg"></p>
+    <!-- Main App (hidden initially) -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="bg-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h2 class="font-semibold" id="welcomeMsg">Welcome</h2>
+                <p class="text-xs text-gray-400" id="todayDate"></p>
+            </div>
+            <button onclick="logout()" class="text-gray-400 hover:text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="flex bg-gray-800 border-t border-gray-700 px-2 py-2 gap-2">
+            <button onclick="showTab('jobs')" id="tabJobs" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium tab-active">
+                My Jobs
+            </button>
+            <button onclick="showTab('earnings')" id="tabEarnings" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium text-gray-400">
+                Earnings
+            </button>
+        </nav>
+
+        <!-- Jobs Tab -->
+        <div id="jobsTab" class="p-4">
+            <div id="jobsList" class="space-y-3">
+                <div class="text-center text-gray-500 py-8">Loading jobs...</div>
             </div>
         </div>
 
-        <!-- Dashboard -->
-        <div id="dashboard" class="dashboard">
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab active" data-tab="tabJobs">Jobs</button>
-                <button class="tab" data-tab="tabPhotos">Photos</button>
-                <button class="tab" data-tab="tabEarnings">Earnings</button>
-                <button class="tab" data-tab="tabProfile">Profile</button>
+        <!-- Earnings Tab -->
+        <div id="earningsTab" class="p-4 hidden">
+            <div class="bg-gray-800 rounded-xl p-4 mb-4">
+                <p class="text-gray-400 text-sm">Total Earnings</p>
+                <p class="text-3xl font-bold text-green-400" id="totalEarnings">$0.00</p>
             </div>
-
-            <!-- Jobs Tab -->
-            <div id="tabJobs" class="tab-content active">
-                <div id="jobsContainer">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Loading jobs...</div>
-                    </div>
-                </div>
+            <div class="bg-gray-800 rounded-xl p-4">
+                <p class="text-gray-400 text-sm mb-2">Jobs Completed</p>
+                <p class="text-2xl font-semibold" id="jobsCompleted">0</p>
             </div>
+        </div>
+    </div>
 
-            <!-- Photos Tab -->
-            <div id="tabPhotos" class="tab-content">
-                <div class="ai-notice">
-                    <div class="ai-notice-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <!-- Job Detail Modal -->
+    <div id="jobModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+        <div class="min-h-screen flex items-end sm:items-center justify-center">
+            <div class="bg-gray-800 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto">
+                <div class="p-4 border-b border-gray-700 flex items-center justify-between sticky top-0 bg-gray-800">
+                    <h3 class="font-semibold text-lg">Job Details</h3>
+                    <button onclick="closeJobModal()" class="p-2 hover:bg-gray-700 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
-                    </div>
-                    <div class="ai-notice-text">
-                        <strong>All photos and videos are verified for authenticity by AI.</strong>
-                        Location, timestamp, and content are validated.
-                    </div>
+                    </button>
                 </div>
-                
-                <div id="photosContainer">
-                    <div class="photo-section">
-                        <div class="photo-section-header">
-                            <div class="photo-section-title">Before Photos</div>
-                            <div class="photo-count">Required before starting</div>
-                        </div>
-                        <div class="photo-grid" id="beforePhotos">
-                            <div class="photo-upload-card" onclick="openPhotoModal('before')">
-                                <div class="photo-upload-icon">+</div>
-                                <div>Add Photo</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="photo-section">
-                        <div class="photo-section-header">
-                            <div class="photo-section-title">After Photos</div>
-                            <div class="photo-count">Required before completing</div>
-                        </div>
-                        <div class="photo-grid" id="afterPhotos">
-                            <div class="photo-upload-card" onclick="openPhotoModal('after')">
-                                <div class="photo-upload-icon">+</div>
-                                <div>Add Photo</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="photo-section">
-                        <div class="photo-section-header">
-                            <div class="photo-section-title">Damage Documentation</div>
-                            <div class="photo-count">Document pre-existing issues</div>
-                        </div>
-                        <div class="photo-grid" id="damagePhotos">
-                            <div class="photo-upload-card" onclick="openPhotoModal('damage')">
-                                <div class="photo-upload-icon">+</div>
-                                <div>Add Photo</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="video-section">
-                        <div class="video-title">Video Walkthrough</div>
-                        <div class="video-coming-soon">Coming soon - Record before and after walkthroughs</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Earnings Tab -->
-            <div id="tabEarnings" class="tab-content">
-                <div class="earnings-summary">
-                    <div class="earnings-label">Total Earnings</div>
-                    <div class="earnings-total" id="totalEarnings">$0.00</div>
-                    <div class="earnings-subtitle">Lifetime earnings</div>
-                </div>
-                
-                <div class="payment-info">
-                    <div class="payment-info-title">Payment Schedule</div>
-                    <div class="payment-info-text">
-                        Once photos are approved, you'll receive automatic payment same business day. Photo review typically completes within 1 hour of job completion.
-                    </div>
-                </div>
-                
-                <div class="stripe-setup" id="stripeSetup">
-                    <div class="stripe-setup-header">
-                        <div class="stripe-setup-title">Payment Account</div>
-                        <span class="stripe-status not-connected" id="stripeStatus">Not Connected</span>
-                    </div>
-                    <div class="stripe-setup-text">
-                        Connect your bank account or debit card to receive payments instantly.
-                    </div>
-                    <button class="btn-stripe" onclick="setupStripe()">Set Up Payments</button>
-                </div>
-                
-                <div class="section-header">Payment History</div>
-                <div class="earnings-list" id="earningsList">
-                    <div class="empty-state">
-                        <div class="empty-state-title">No payments yet</div>
-                        <div class="empty-state-text">Completed jobs will appear here</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Tab -->
-            <div id="tabProfile" class="tab-content">
-                <div class="profile-section">
-                    <div class="profile-section-header">
-                        <div class="profile-section-title">Contact Information</div>
-                    </div>
-                    <div class="profile-field">
-                        <label>Phone Number</label>
-                        <input type="tel" id="profilePhone" placeholder="Enter phone number">
-                    </div>
-                    <div class="profile-field">
-                        <label>Email Address</label>
-                        <input type="email" id="profileEmail" placeholder="Enter email">
-                    </div>
-                    <button class="btn btn-primary" onclick="saveProfile()" style="margin-top: 0.75rem;">Save Changes</button>
-                </div>
-                
-                <div class="profile-section">
-                    <div class="profile-section-header">
-                        <div class="profile-section-title">Home Address</div>
-                    </div>
-                    <div class="profile-field">
-                        <label>Street Address</label>
-                        <input type="text" id="profileStreet" placeholder="123 Main St, Apt 4">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                        <div class="profile-field">
-                            <label>City</label>
-                            <input type="text" id="profileCity" placeholder="City">
-                        </div>
-                        <div class="profile-field">
-                            <label>State</label>
-                            <input type="text" id="profileState" placeholder="NJ" maxlength="2" style="text-transform: uppercase;">
-                        </div>
-                    </div>
-                    <div class="profile-field">
-                        <label>ZIP Code</label>
-                        <input type="text" id="profileZip" placeholder="08527" maxlength="10">
-                    </div>
-                    <button class="btn btn-primary" onclick="saveAddress()" style="margin-top: 0.75rem;">Save Address</button>
-                </div>
-                
-                <div class="profile-section">
-                    <div class="profile-section-header">
-                        <div class="profile-section-title">Documents</div>
-                    </div>
-                    <div class="document-list">
-                        <div class="document-item">
-                            <div class="document-info">
-                                <div class="document-name">Driver's License / State ID</div>
-                                <div class="document-status missing" id="idStatus">Required</div>
-                            </div>
-                            <button class="btn-upload-sm" onclick="uploadDocument('id')">Upload</button>
-                        </div>
-                        <div class="document-item">
-                            <div class="document-info">
-                                <div class="document-name">Insurance Certificate</div>
-                                <div class="document-status missing" id="insuranceStatus">Not uploaded</div>
-                            </div>
-                            <button class="btn-upload-sm" onclick="uploadDocument('insurance')">Upload</button>
-                        </div>
-                        <div class="document-item">
-                            <div class="document-info">
-                                <div class="document-name">Independent Contractor Agreement</div>
-                                <div class="document-status missing" id="icaStatus">Not signed</div>
-                            </div>
-                            <button class="btn-upload-sm" onclick="uploadDocument('ica')">Sign</button>
-                        </div>
-                        <div class="document-item">
-                            <div class="document-info">
-                                <div class="document-name">W-9 Form</div>
-                                <div class="document-status missing" id="w9Status">Not uploaded</div>
-                            </div>
-                            <button class="btn-upload-sm" onclick="uploadDocument('w9')">Upload</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="profile-section">
-                    <div class="profile-section-header">
-                        <div class="profile-section-title">Performance</div>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value orange" id="statJobs">0</div>
-                            <div class="stat-label">Jobs Completed</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value success" id="statRating">-</div>
-                            <div class="stat-label">Avg Rating</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statOnTime">-</div>
-                            <div class="stat-label">On-Time Rate</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="statIssues">0</div>
-                            <div class="stat-label">Quality Issues</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="profile-section">
-                    <div class="profile-section-header">
-                        <div class="profile-section-title">Service Areas</div>
-                    </div>
-                    <div class="service-areas" id="serviceAreas">
-                        <span class="service-area-tag">Loading...</span>
-                    </div>
+                <div id="jobModalContent" class="p-4">
+                    <!-- Content filled by JS -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Photo Upload Modal -->
-    <div id="photoModal" class="modal-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Upload Photo</div>
-                <button class="modal-close" onclick="closePhotoModal()">&times;</button>
-            </div>
-            
-            <div class="form-group">
-                <label>Select Job</label>
-                <select id="photoJobSelect" class="form-select">
-                    <option value="">Choose a job...</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Photo Type</label>
-                <div class="photo-type-toggle">
-                    <button class="photo-type-btn active" data-type="before">Before</button>
-                    <button class="photo-type-btn" data-type="after">After</button>
-                    <button class="photo-type-btn" data-type="damage">Damage</button>
-                </div>
-            </div>
-            
-            <div class="form-group" id="damageNoteGroup" style="display: none;">
-                <label>Damage Description</label>
-                <textarea id="damageNote" class="form-textarea" placeholder="Describe the pre-existing damage..."></textarea>
-            </div>
-            
-            <img id="previewImg" class="preview-img" alt="Preview">
-            <div class="file-drop" id="fileDrop" onclick="document.getElementById('photoInput').click()">
-                Click to select photo or take a picture
-            </div>
-            <input type="file" id="photoInput" class="file-input" accept="image/*" capture="environment">
-            
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closePhotoModal()">Cancel</button>
-                <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadPhoto()">Upload</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-4 right-4 bg-gray-700 text-white px-4 py-3 rounded-xl text-center transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
     <script>
+        // ===== CONFIGURATION =====
         const API_BASE = 'https://x8ki-letl-twmt.n7.xano.io/api:O_MQ1nmN';
+        
+        // ===== STATE =====
         let currentWorker = null;
         let currentJobs = [];
-        let selectedPhotoType = 'before';
-        let jobTimers = {};
+        let selectedJob = null;
 
-        // DOM Elements
-        const loginScreen = document.getElementById('loginScreen');
-        const dashboard = document.getElementById('dashboard');
-        const mainHeader = document.getElementById('mainHeader');
-        const pinInput = document.getElementById('pinInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginError = document.getElementById('loginError');
-
-        // Check for saved session
-        const savedWorker = localStorage.getItem('sjcleanup_worker');
-        if (savedWorker) {
-            currentWorker = JSON.parse(savedWorker);
-            showDashboard();
+        // ===== UTILITIES =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
         }
 
-        // Tab Navigation
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.dataset.tab;
-                
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(tabId).classList.add('active');
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0);
+        }
 
-                if (tabId === 'tabEarnings') loadEarnings();
-                if (tabId === 'tabProfile') loadProfile();
-            });
-        });
+        function formatDate(dateStr) {
+            if (!dateStr) return 'TBD';
+            return new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
 
-        // PIN Input
-        pinInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '');
-            loginBtn.disabled = e.target.value.length !== 6;
-        });
-
-        pinInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && pinInput.value.length === 6) {
-                login();
-            }
-        });
-
-        loginBtn.addEventListener('click', login);
-
-        // Login
+        // ===== LOGIN =====
         async function login() {
-            const pin = pinInput.value;
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Signing in...';
-            loginError.style.display = 'none';
+            const pin = document.getElementById('pinInput').value;
+            const errorEl = document.getElementById('loginError');
+            
+            if (!pin || pin.length < 4) {
+                errorEl.textContent = 'Please enter your PIN';
+                errorEl.classList.remove('hidden');
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE}/crew/login`, {
@@ -1478,630 +144,278 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pin })
                 });
-
+                
                 const data = await response.json();
-
+                console.log('Login response:', data);
+                
                 if (data.success) {
                     currentWorker = {
                         id: data.worker_id,
                         name: data.name
                     };
-                    localStorage.setItem('sjcleanup_worker', JSON.stringify(currentWorker));
-                    showDashboard();
+                    localStorage.setItem('crew_worker', JSON.stringify(currentWorker));
+                    showMainApp();
+                    loadJobs();
                 } else {
-                    throw new Error(data.message || 'Invalid PIN');
+                    errorEl.textContent = data.message || 'Invalid PIN';
+                    errorEl.classList.remove('hidden');
                 }
             } catch (error) {
-                loginError.textContent = error.message || 'Login failed';
-                loginError.style.display = 'block';
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Sign In';
+                console.error('Login error:', error);
+                errorEl.textContent = 'Connection error. Please try again.';
+                errorEl.classList.remove('hidden');
             }
         }
 
-        // Logout
         function logout() {
+            localStorage.removeItem('crew_worker');
             currentWorker = null;
-            localStorage.removeItem('sjcleanup_worker');
-            pinInput.value = '';
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Sign In';
-            loginScreen.style.display = 'flex';
-            dashboard.style.display = 'none';
-            mainHeader.style.display = 'none';
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('pinInput').value = '';
         }
 
-        // Show Dashboard
-        function showDashboard() {
-            loginScreen.style.display = 'none';
-            dashboard.style.display = 'block';
-            mainHeader.style.display = 'block';
-            document.getElementById('headerWorkerName').textContent = currentWorker.name || 'Crew';
-            loadJobs();
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('welcomeMsg').textContent = `Welcome, ${currentWorker.name}!`;
+            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', month: 'long', day: 'numeric' 
+            });
         }
 
-        // Load Jobs
+        // ===== TABS =====
+        function showTab(tab) {
+            document.getElementById('jobsTab').classList.toggle('hidden', tab !== 'jobs');
+            document.getElementById('earningsTab').classList.toggle('hidden', tab !== 'earnings');
+            document.getElementById('tabJobs').classList.toggle('tab-active', tab === 'jobs');
+            document.getElementById('tabEarnings').classList.toggle('tab-active', tab === 'earnings');
+            document.getElementById('tabJobs').classList.toggle('text-gray-400', tab !== 'jobs');
+            document.getElementById('tabEarnings').classList.toggle('text-gray-400', tab !== 'earnings');
+            
+            if (tab === 'earnings') loadEarnings();
+        }
+
+        // ===== JOBS =====
         async function loadJobs() {
-            const container = document.getElementById('jobsContainer');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">Loading jobs...</div></div>';
-
+            const container = document.getElementById('jobsList');
+            
             try {
                 const response = await fetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await response.json();
-
-                if (data.success && data.jobs) {
-                    currentJobs = data.jobs;
-                    renderJobs(data.jobs);
-                    updatePhotoJobSelect();
-                } else {
-                    currentJobs = [];
-                    renderJobs([]);
+                console.log('Jobs response:', data);
+                
+                currentJobs = data.jobs || [];
+                
+                if (currentJobs.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <p class="text-gray-500 text-lg">No active jobs</p>
+                            <p class="text-gray-600 text-sm mt-2">Check back later for new assignments</p>
+                        </div>
+                    `;
+                    return;
                 }
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-title">Unable to load jobs</div>
-                        <div class="empty-state-text">Pull down to refresh</div>
-                    </div>
-                `;
-            }
-        }
 
-        // Render Jobs
-        function renderJobs(jobs) {
-            const container = document.getElementById('jobsContainer');
-            const activeJobs = jobs.filter(j => j.status !== 'completed' && j.status !== 'cancelled');
-            
-            if (activeJobs.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-title">No active jobs</div>
-                        <div class="empty-state-text">New assignments will appear here</div>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            activeJobs.forEach(job => {
-                html += renderJobCard(job);
-            });
-            container.innerHTML = html;
-        }
-
-        // Render Job Card
-        function renderJobCard(job) {
-            const statusLabels = {
-                'dispatched': 'Dispatched',
-                'in_progress': 'In Progress',
-                'pending_review': 'Pending Review',
-                'completed': 'Completed'
-            };
-            const statusClass = job.status?.replace(' ', '_') || 'dispatched';
-
-            const checklist = `
-                <div class="checklist">
-                    <div class="checklist-title">Job Checklist</div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checkbox"><span class="checkbox-check">✓</span></div>
-                        <span>Take before photos</span>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checkbox"><span class="checkbox-check">✓</span></div>
-                        <span>Document any pre-existing damage</span>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checkbox"><span class="checkbox-check">✓</span></div>
-                        <span>Complete all cleaning tasks</span>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checkbox"><span class="checkbox-check">✓</span></div>
-                        <span>Take after photos</span>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checkbox"><span class="checkbox-check">✓</span></div>
-                        <span>Final walkthrough</span>
-                    </div>
-                </div>
-            `;
-
-            return `
-                <div class="job-card">
-                    <div class="job-header">
-                        <div>
-                            <div class="job-type">${job.job_type?.replace(/_/g, ' ') || 'Cleaning'}</div>
-                            <div class="job-id">Job #${job.id}</div>
-                        </div>
-                        <span class="status-badge status-${statusClass}">${statusLabels[job.status] || job.status}</span>
-                    </div>
-                    
-                    <div class="job-address">
-                        <span class="job-address-icon">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                <circle cx="12" cy="10" r="3"/>
-                            </svg>
-                        </span>
-                        <span>${job.address || 'Address TBD'}${job.city ? ', ' + job.city : ''}</span>
-                    </div>
-                    
-                    <div class="job-meta">
-                        <div class="job-meta-item">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <path d="M3 9h18"/>
-                            </svg>
-                            ${job.sq_footage?.toLocaleString() || '—'} sq ft
-                        </div>
-                        <div class="job-meta-item job-payout">
-                            $${job.crew_payout?.toFixed(2) || '0.00'}
-                        </div>
-                        <div class="job-meta-item">
-                            <a href="https://maps.google.com/?q=${encodeURIComponent(job.address + ', ' + job.city)}" target="_blank" style="color: var(--blue); text-decoration: none;">
-                                Get Directions
-                            </a>
-                        </div>
-                    </div>
-                    
-                    ${job.special_instructions ? `
-                        <div class="job-notes">
-                            <div class="job-notes-label">Special Instructions</div>
-                            ${job.special_instructions}
-                        </div>
-                    ` : ''}
-                    
-                    ${job.status === 'in_progress' ? checklist : ''}
-                    
-                    ${job.status === 'in_progress' ? `
-                        <div class="timer-card">
+                container.innerHTML = currentJobs.map(job => `
+                    <div class="job-card bg-gray-800 rounded-xl p-4 cursor-pointer" onclick="openJobModal(${job.id})">
+                        <div class="flex justify-between items-start mb-2">
                             <div>
-                                <div class="timer-display" id="timer-${job.id}">00:00:00</div>
-                                <div class="timer-label">Time on job</div>
+                                <p class="font-semibold">${job.address || 'Address TBD'}</p>
+                                <p class="text-sm text-gray-400">${job.city || ''}, ${job.state || 'NJ'}</p>
                             </div>
-                            <button class="timer-btn start" id="timer-btn-${job.id}" onclick="toggleTimer(${job.id})">Start</button>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(job.status)}">
+                                ${formatStatus(job.status)}
+                            </span>
                         </div>
-                    ` : ''}
-                    
-                    <div class="job-actions">
-                        ${job.status === 'dispatched' ? `
-                            <button class="btn-action btn-start" onclick="startJob(${job.id})">Start Job</button>
-                            <button class="btn-action btn-outline" onclick="openPhotoModal('before', ${job.id})">Add Photos</button>
-                        ` : ''}
-                        ${job.status === 'in_progress' ? `
-                            <button class="btn-action btn-secondary" onclick="openPhotoModal('after', ${job.id})">Add Photos</button>
-                            <button class="btn-action btn-complete" onclick="completeJob(${job.id})">Complete Job</button>
-                        ` : ''}
+                        <div class="flex justify-between text-sm mt-3">
+                            <span class="text-gray-400">📅 ${formatDate(job.scheduled_date)}</span>
+                            <span class="text-green-400 font-semibold">${formatCurrency(job.price_worker)}</span>
+                        </div>
                     </div>
-                </div>
-            `;
-        }
-
-        // Toggle Checklist
-        function toggleChecklist(el) {
-            el.classList.toggle('checked');
-        }
-
-        // Timer functions
-        function toggleTimer(jobId) {
-            const btn = document.getElementById(`timer-btn-${jobId}`);
-            const display = document.getElementById(`timer-${jobId}`);
-            
-            if (!jobTimers[jobId] || !jobTimers[jobId].running) {
-                // Start timer
-                jobTimers[jobId] = {
-                    running: true,
-                    startTime: Date.now() - (jobTimers[jobId]?.elapsed || 0),
-                    interval: setInterval(() => updateTimerDisplay(jobId), 1000)
-                };
-                btn.textContent = 'Pause';
-                btn.className = 'timer-btn running';
-            } else {
-                // Pause timer
-                jobTimers[jobId].elapsed = Date.now() - jobTimers[jobId].startTime;
-                jobTimers[jobId].running = false;
-                clearInterval(jobTimers[jobId].interval);
-                btn.textContent = 'Resume';
-                btn.className = 'timer-btn pause';
+                `).join('');
+            } catch (error) {
+                console.error('Load jobs error:', error);
+                container.innerHTML = `<div class="text-center text-red-400 py-8">Failed to load jobs</div>`;
             }
         }
 
-        function updateTimerDisplay(jobId) {
-            const display = document.getElementById(`timer-${jobId}`);
-            if (!display || !jobTimers[jobId]) return;
-            
-            const elapsed = Date.now() - jobTimers[jobId].startTime;
-            const hours = Math.floor(elapsed / 3600000);
-            const minutes = Math.floor((elapsed % 3600000) / 60000);
-            const seconds = Math.floor((elapsed % 60000) / 1000);
-            
-            display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        function getStatusColor(status) {
+            const colors = {
+                'scheduled': 'bg-blue-500/20 text-blue-400',
+                'confirmed': 'bg-purple-500/20 text-purple-400',
+                'in_progress': 'bg-yellow-500/20 text-yellow-400',
+                'pending_verification': 'bg-orange-500/20 text-orange-400',
+                'completed': 'bg-green-500/20 text-green-400'
+            };
+            return colors[status] || 'bg-gray-500/20 text-gray-400';
         }
 
-        // Start Job
+        function formatStatus(status) {
+            return (status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // ===== JOB MODAL =====
+        function openJobModal(jobId) {
+            selectedJob = currentJobs.find(j => j.id === jobId);
+            if (!selectedJob) return;
+
+            const content = document.getElementById('jobModalContent');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-gray-400 text-sm">Address</p>
+                        <p class="font-semibold">${selectedJob.address || 'TBD'}</p>
+                        <p class="text-gray-400">${selectedJob.city || ''}, ${selectedJob.state || 'NJ'} ${selectedJob.zip || ''}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-400 text-sm">Date</p>
+                            <p class="font-semibold">${formatDate(selectedJob.scheduled_date)}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">Time</p>
+                            <p class="font-semibold">${selectedJob.scheduled_time || 'TBD'}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-400 text-sm">Job Type</p>
+                            <p class="font-semibold">${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">Your Pay</p>
+                            <p class="font-semibold text-green-400">${formatCurrency(selectedJob.price_worker)}</p>
+                        </div>
+                    </div>
+
+                    ${selectedJob.special_instructions ? `
+                        <div>
+                            <p class="text-gray-400 text-sm">Instructions</p>
+                            <p class="bg-gray-700 rounded-lg p-3 mt-1">${selectedJob.special_instructions}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="pt-4 space-y-3">
+                        ${getJobActions(selectedJob)}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('jobModal').classList.remove('hidden');
+        }
+
+        function getJobActions(job) {
+            switch(job.status) {
+                case 'scheduled':
+                case 'dispatched':
+                    return `
+                        <button onclick="startJob(${job.id})" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold">
+                            🚀 Start Job
+                        </button>
+                    `;
+                case 'in_progress':
+                    return `
+                        <button onclick="completeJob(${job.id})" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold">
+                            ✅ Mark Complete
+                        </button>
+                    `;
+                case 'pending_verification':
+                    return `<p class="text-center text-yellow-400">⏳ Waiting for admin verification</p>`;
+                default:
+                    return '';
+            }
+        }
+
+        function closeJobModal() {
+            document.getElementById('jobModal').classList.add('hidden');
+            selectedJob = null;
+        }
+
+        // ===== JOB ACTIONS =====
         async function startJob(jobId) {
             try {
                 const response = await fetch(`${API_BASE}/crew/start-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: jobId, worker_id: currentWorker.id })
+                    body: JSON.stringify({ job_id: jobId, crew_id: currentWorker.id })
                 });
+                
                 const data = await response.json();
+                console.log('Start job response:', data);
+                
                 if (data.success) {
-                    showToast('Job started');
+                    showToast('Job started! 🚀');
+                    closeJobModal();
                     loadJobs();
                 } else {
-                    showToast(data.message || 'Failed to start job', true);
+                    showToast(data.message || 'Failed to start job');
                 }
             } catch (error) {
-                showToast('Error starting job', true);
+                console.error('Start job error:', error);
+                showToast('Connection error');
             }
         }
 
-        // Complete Job
         async function completeJob(jobId) {
-            if (!confirm('Mark this job as complete? Make sure you have uploaded all required photos.')) return;
-
             try {
                 const response = await fetch(`${API_BASE}/crew/complete-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: jobId, worker_id: currentWorker.id })
+                    body: JSON.stringify({ job_id: jobId, crew_id: currentWorker.id })
                 });
+                
                 const data = await response.json();
+                console.log('Complete job response:', data);
+                
                 if (data.success) {
-                    showToast('Job completed - photos pending review');
+                    showToast('Job completed! ✅');
+                    closeJobModal();
                     loadJobs();
                 } else {
-                    showToast(data.message || 'Failed to complete job', true);
+                    showToast(data.message || 'Failed to complete job');
                 }
             } catch (error) {
-                showToast('Error completing job', true);
+                console.error('Complete job error:', error);
+                showToast('Connection error');
             }
         }
 
-        // Photo Modal
-        function openPhotoModal(type = 'before', jobId = null) {
-            document.getElementById('photoModal').style.display = 'flex';
-            document.getElementById('previewImg').style.display = 'none';
-            document.getElementById('fileDrop').textContent = 'Click to select photo or take a picture';
-            document.getElementById('uploadBtn').disabled = true;
-            document.getElementById('photoInput').value = '';
-            document.getElementById('damageNote').value = '';
-            
-            // Set photo type
-            selectedPhotoType = type;
-            document.querySelectorAll('.photo-type-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.type === type);
-            });
-            document.getElementById('damageNoteGroup').style.display = type === 'damage' ? 'block' : 'none';
-            
-            // Set job if provided
-            if (jobId) {
-                document.getElementById('photoJobSelect').value = jobId;
-            }
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photoModal').style.display = 'none';
-        }
-
-        // Update job select in photo modal
-        function updatePhotoJobSelect() {
-            const select = document.getElementById('photoJobSelect');
-            const activeJobs = currentJobs.filter(j => j.status !== 'completed' && j.status !== 'cancelled');
-            select.innerHTML = '<option value="">Choose a job...</option>';
-            activeJobs.forEach(job => {
-                select.innerHTML += `<option value="${job.id}">Job #${job.id} - ${job.job_type?.replace(/_/g, ' ') || 'Cleaning'}</option>`;
-            });
-        }
-
-        // Photo type toggle
-        document.querySelectorAll('.photo-type-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.photo-type-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedPhotoType = btn.dataset.type;
-                document.getElementById('damageNoteGroup').style.display = selectedPhotoType === 'damage' ? 'block' : 'none';
-            });
-        });
-
-        // Photo input
-        document.getElementById('photoInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('previewImg').style.display = 'block';
-                    document.getElementById('fileDrop').textContent = file.name;
-                    document.getElementById('uploadBtn').disabled = !document.getElementById('photoJobSelect').value;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('photoJobSelect').addEventListener('change', () => {
-            const hasFile = document.getElementById('photoInput').files[0];
-            const hasJob = document.getElementById('photoJobSelect').value;
-            document.getElementById('uploadBtn').disabled = !hasFile || !hasJob;
-        });
-
-        // Upload Photo
-        async function uploadPhoto() {
-            const file = document.getElementById('photoInput').files[0];
-            const jobId = document.getElementById('photoJobSelect').value;
-            const damageNote = document.getElementById('damageNote').value;
-            
-            if (!file || !jobId) {
-                showToast('Please select a job and photo', true);
-                return;
-            }
-
-            const uploadBtn = document.getElementById('uploadBtn');
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Uploading...';
-
-            try {
-                const base64 = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
-                    reader.readAsDataURL(file);
-                });
-
-                const response = await fetch(`${API_BASE}/worker/upload-photo`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_id: parseInt(jobId),
-                        worker_id: currentWorker.id,
-                        photo_type: selectedPhotoType,
-                        photo_data: base64,
-                        filename: file.name,
-                        note: damageNote || null
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Photo uploaded');
-                    closePhotoModal();
-                } else {
-                    throw new Error(data.message || 'Upload failed');
-                }
-            } catch (error) {
-                showToast('Upload failed: ' + error.message, true);
-            } finally {
-                uploadBtn.disabled = false;
-                uploadBtn.textContent = 'Upload';
-            }
-        }
-
-        // Load Earnings
+        // ===== EARNINGS =====
         async function loadEarnings() {
             try {
                 const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await response.json();
-
-                if (data.success && data.jobs) {
-                    const completedJobs = data.jobs.filter(j => j.status === 'completed');
-                    const total = completedJobs.reduce((sum, j) => sum + (j.crew_payout || 0), 0);
-                    
-                    document.getElementById('totalEarnings').textContent = '$' + total.toFixed(2);
-
-                    const listEl = document.getElementById('earningsList');
-                    if (completedJobs.length === 0) {
-                        listEl.innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-title">No payments yet</div>
-                                <div class="empty-state-text">Completed jobs will appear here</div>
-                            </div>
-                        `;
-                    } else {
-                        listEl.innerHTML = completedJobs.map(job => {
-                            const date = job.completed_at ? new Date(job.completed_at).toLocaleDateString() : 'Recent';
-                            return `
-                                <div class="earnings-row">
-                                    <div class="earnings-row-info">
-                                        <span class="earnings-row-type">${job.job_type?.replace(/_/g, ' ') || 'Cleaning'}</span>
-                                        <span class="earnings-row-date">${date}</span>
-                                    </div>
-                                    <div class="earnings-row-right">
-                                        <div class="earnings-row-amount">$${job.crew_payout?.toFixed(2) || '0.00'}</div>
-                                        <div class="earnings-row-status">Paid</div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load earnings:', error);
-            }
-        }
-
-        // Load Profile
-        async function loadProfile() {
-            try {
-                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
-                const data = await response.json();
+                console.log('Earnings response:', data);
                 
-                if (data.worker) {
-                    // Contact info
-                    document.getElementById('profilePhone').value = data.worker.phone || '';
-                    document.getElementById('profileEmail').value = data.worker.email || '';
-                    
-                    // Address
-                    document.getElementById('profileStreet').value = data.worker.address || '';
-                    document.getElementById('profileCity').value = data.worker.city || '';
-                    document.getElementById('profileState').value = data.worker.state || '';
-                    document.getElementById('profileZip').value = data.worker.zip || '';
-                    
-                    // Stats
-                    document.getElementById('statJobs').textContent = data.worker.total_jobs_completed || 0;
-                    document.getElementById('statRating').textContent = data.worker.avg_rating ? data.worker.avg_rating.toFixed(1) : '-';
-                    document.getElementById('statIssues').textContent = data.worker.quality_issues || 0;
-                    
-                    // Service areas
-                    const areasEl = document.getElementById('serviceAreas');
-                    if (data.worker.counties_served && data.worker.counties_served.length > 0) {
-                        areasEl.innerHTML = data.worker.counties_served.map(c => 
-                            `<span class="service-area-tag">${c}</span>`
-                        ).join('');
-                    } else {
-                        areasEl.innerHTML = '<span class="service-area-tag">Contact admin to set up</span>';
-                    }
-                    
-                    // Document status
-                    if (data.worker.drivers_license_url) {
-                        document.getElementById('idStatus').textContent = 'Uploaded';
-                        document.getElementById('idStatus').className = 'document-status verified';
-                    }
-                    if (data.worker.insurance_doc_url || data.worker.insurance_expires_at) {
-                        document.getElementById('insuranceStatus').textContent = 'Verified';
-                        document.getElementById('insuranceStatus').className = 'document-status verified';
-                    }
-                    if (data.worker.w9_url) {
-                        document.getElementById('w9Status').textContent = 'Uploaded';
-                        document.getElementById('w9Status').className = 'document-status verified';
-                    }
-                    if (data.worker.ica_signed_at) {
-                        document.getElementById('icaStatus').textContent = 'Signed';
-                        document.getElementById('icaStatus').className = 'document-status verified';
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load profile:', error);
-            }
-        }
-
-        // Save Profile
-        async function saveProfile() {
-            const phone = document.getElementById('profilePhone').value;
-            const email = document.getElementById('profileEmail').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/crew/save-profile`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        worker_id: currentWorker.id,
-                        phone: phone,
-                        email: email
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Profile saved');
-                } else {
-                    showToast(data.message || 'Failed to save', true);
-                }
-            } catch (error) {
-                showToast('Error saving profile', true);
-            }
-        }
-
-        // Save Address
-        async function saveAddress() {
-            const street = document.getElementById('profileStreet').value;
-            const city = document.getElementById('profileCity').value;
-            const state = document.getElementById('profileState').value;
-            const zip = document.getElementById('profileZip').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/crew/save-address`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        worker_id: currentWorker.id,
-                        street: street,
-                        city: city,
-                        state: state,
-                        zip: zip
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Address saved');
-                } else {
-                    showToast(data.message || 'Failed to save', true);
-                }
-            } catch (error) {
-                showToast('Error saving address', true);
-            }
-        }
-
-        // Document upload placeholder
-        function uploadDocument(type) {
-            // Create hidden file input
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = type === 'id' ? 'image/*' : '.pdf,image/*';
-            
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
+                const jobs = data.jobs || [];
+                const completedJobs = jobs.filter(j => j.status === 'completed' || j.status === 'verified' || j.status === 'paid');
+                const totalEarnings = completedJobs.reduce((sum, j) => sum + (j.price_worker || 0), 0);
                 
-                showToast('Uploading...');
-                
-                try {
-                    const base64 = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result.split(',')[1]);
-                        reader.readAsDataURL(file);
-                    });
-                    
-                    const response = await fetch(`${API_BASE}/crew/upload-document`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            worker_id: currentWorker.id,
-                            doc_type: type,
-                            file_data: base64,
-                            filename: file.name
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success) {
-                        showToast('Document uploaded');
-                        // Update status display
-                        const statusMap = {
-                            'id': 'idStatus',
-                            'insurance': 'insuranceStatus',
-                            'w9': 'w9Status',
-                            'ica': 'icaStatus'
-                        };
-                        const statusEl = document.getElementById(statusMap[type]);
-                        if (statusEl) {
-                            statusEl.textContent = 'Uploaded';
-                            statusEl.className = 'document-status verified';
-                        }
-                    } else {
-                        showToast(data.message || 'Upload failed', true);
-                    }
-                } catch (error) {
-                    showToast('Error uploading', true);
-                }
-            };
-            
-            input.click();
+                document.getElementById('totalEarnings').textContent = formatCurrency(totalEarnings);
+                document.getElementById('jobsCompleted').textContent = completedJobs.length;
+            } catch (error) {
+                console.error('Load earnings error:', error);
+            }
         }
 
-        // Stripe setup placeholder
-        function setupStripe() {
-            showToast('Payment setup coming soon');
-        }
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for saved session
+            const saved = localStorage.getItem('crew_worker');
+            if (saved) {
+                currentWorker = JSON.parse(saved);
+                showMainApp();
+                loadJobs();
+            }
 
-        // Toast
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast' + (isError ? ' error' : ' success');
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
+            // Enter key to login
+            document.getElementById('pinInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+        });
     </script>
 </body>
 </html>
