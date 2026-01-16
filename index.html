@@ -4,118 +4,882 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SJCleanup - Crew Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        .tab-active { background: #3b82f6; color: white; }
-        .job-card { transition: transform 0.2s; }
-        .job-card:active { transform: scale(0.98); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #111;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 32px 24px;
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f97316;
+        }
+        .login-logo p {
+            color: #666;
+            margin-top: 4px;
+        }
+        .login-label {
+            display: block;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .login-input {
+            width: 100%;
+            background: #222;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 8px;
+            color: #fff;
+            outline: none;
+        }
+        .login-input:focus {
+            border-color: #f97316;
+        }
+        .login-btn {
+            width: 100%;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .login-btn:hover {
+            background: #ea580c;
+        }
+        .login-error {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* Main App */
+        .main-app { display: none; }
+        .main-app.active { display: block; }
+        
+        /* Header */
+        .header {
+            background: #1a1a1a;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .header-date {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 8px;
+        }
+        .logout-btn:hover {
+            color: #fff;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: #1a1a1a;
+            padding: 8px 12px;
+            gap: 8px;
+            border-bottom: 1px solid #333;
+        }
+        .tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #666;
+            padding: 12px 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: #f97316;
+            color: #fff;
+        }
+        .tab:hover:not(.active) {
+            background: #222;
+            color: #fff;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 16px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Cards */
+        .card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .card-subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-scheduled { background: #3b82f620; color: #60a5fa; }
+        .status-in_progress { background: #f9731620; color: #f97316; }
+        .status-pending_verification { background: #eab30820; color: #eab308; }
+        .status-completed { background: #22c55e20; color: #22c55e; }
+        
+        /* Job Details */
+        .job-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #333;
+        }
+        .job-detail-label {
+            color: #666;
+            font-size: 12px;
+        }
+        .job-detail-value {
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .job-payout {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            margin-top: 12px;
+        }
+        .btn-primary {
+            background: #f97316;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #ea580c;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-secondary {
+            background: #333;
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 14px;
+            width: auto;
+            margin-top: 0;
+        }
+        
+        /* Checklist */
+        .checklist {
+            margin-top: 16px;
+        }
+        .checklist-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .checklist-checkbox.checked {
+            background: #f97316;
+            border-color: #f97316;
+        }
+        .checklist-checkbox.checked::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+        }
+        .checklist-text {
+            font-size: 14px;
+        }
+        
+        /* Timer */
+        .timer-box {
+            background: #222;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+        .timer-display {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'SF Mono', Monaco, monospace;
+            color: #f97316;
+        }
+        .timer-label {
+            color: #666;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .timer-btn {
+            margin-top: 12px;
+            padding: 10px 24px;
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Photos Section */
+        .photo-section {
+            margin-bottom: 20px;
+        }
+        .photo-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .photo-section-title .required {
+            color: #f97316;
+            font-size: 12px;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .photo-item {
+            aspect-ratio: 1;
+            background: #222;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed #333;
+            color: #666;
+            font-size: 24px;
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .photo-item:hover {
+            border-color: #f97316;
+            color: #f97316;
+        }
+        
+        /* AI Notice */
+        .ai-notice {
+            background: #f9731610;
+            border: 1px solid #f9731640;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #f97316;
+        }
+        
+        /* Earnings */
+        .earnings-total {
+            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .earnings-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .earnings-amount {
+            font-size: 42px;
+            font-weight: 700;
+            color: #22c55e;
+            margin-top: 4px;
+        }
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #222;
+        }
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+        .payment-date {
+            color: #666;
+            font-size: 13px;
+        }
+        .payment-type {
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .payment-amount {
+            font-weight: 600;
+            color: #22c55e;
+        }
+        
+        /* Stripe Setup */
+        .stripe-setup {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .stripe-setup h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .stripe-setup p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        /* Profile */
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            margin-top: 24px;
+        }
+        .section-title:first-child {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: #f97316;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+        }
+        
+        /* Documents */
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        .document-name {
+            font-size: 14px;
+        }
+        .document-status {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .document-status.verified {
+            color: #22c55e;
+        }
+        .document-status.missing {
+            color: #ef4444;
+        }
+        .document-status.required {
+            color: #f97316;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-item {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f97316;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* Service Areas */
+        .service-areas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .service-area-tag {
+            background: #222;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 16px;
+            right: 16px;
+            background: #333;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 10px;
+            text-align: center;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: #22c55e;
+        }
+        .toast.error {
+            background: #ef4444;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            background: #1a1a1a;
+        }
+        .modal-header h3 {
+            font-size: 18px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #666;
+        }
+        .empty-state p {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        /* Hide login when app is shown */
+        .login-screen.hidden { display: none; }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="w-full max-w-sm">
-            <h1 class="text-3xl font-bold text-center mb-2">🧹 SJCleanup</h1>
-            <p class="text-gray-400 text-center mb-8">Crew Portal</p>
-            
-            <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
-                <label class="block text-sm text-gray-400 mb-2">Enter your PIN</label>
-                <input type="tel" id="pinInput" maxlength="6" 
-                    class="w-full bg-gray-700 border-2 border-gray-600 rounded-xl px-4 py-4 text-2xl text-center tracking-widest focus:border-blue-500 focus:outline-none"
-                    placeholder="••••••" inputmode="numeric" pattern="[0-9]*">
-                <button onclick="login()" 
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-xl mt-4 transition">
-                    Sign In
-                </button>
-                <p id="loginError" class="text-red-400 text-sm text-center mt-3 hidden"></p>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">
+                <h1>SJCleanup</h1>
+                <p>Crew Portal</p>
             </div>
+            <label class="login-label">Enter your PIN</label>
+            <input type="tel" id="pinInput" class="login-input" maxlength="6" placeholder="------" inputmode="numeric" pattern="[0-9]*">
+            <button class="login-btn" onclick="login()">Sign In</button>
+            <p class="login-error" id="loginError"></p>
         </div>
     </div>
 
-    <!-- Main App (hidden initially) -->
-    <div id="mainApp" class="hidden">
+    <!-- Main App -->
+    <div class="main-app" id="mainApp">
         <!-- Header -->
-        <header class="bg-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+        <header class="header">
             <div>
-                <h2 class="font-semibold" id="welcomeMsg">Welcome</h2>
-                <p class="text-xs text-gray-400" id="todayDate"></p>
+                <div class="header-title" id="welcomeMsg">Welcome</div>
+                <div class="header-date" id="todayDate"></div>
             </div>
-            <button onclick="logout()" class="text-gray-400 hover:text-white p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            <button class="logout-btn" onclick="logout()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
                 </svg>
             </button>
         </header>
 
-        <!-- Tab Navigation -->
-        <nav class="flex bg-gray-800 border-t border-gray-700 px-2 py-2 gap-2">
-            <button onclick="showTab('jobs')" id="tabJobs" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium tab-active">
-                My Jobs
-            </button>
-            <button onclick="showTab('earnings')" id="tabEarnings" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium text-gray-400">
-                Earnings
-            </button>
+        <!-- Tabs -->
+        <nav class="tabs">
+            <button class="tab active" onclick="showTab('jobs')">Jobs</button>
+            <button class="tab" onclick="showTab('photos')">Photos</button>
+            <button class="tab" onclick="showTab('earnings')">Earnings</button>
+            <button class="tab" onclick="showTab('profile')">Profile</button>
         </nav>
 
         <!-- Jobs Tab -->
-        <div id="jobsTab" class="p-4">
-            <div id="jobsList" class="space-y-3">
-                <div class="text-center text-gray-500 py-8">Loading jobs...</div>
+        <div class="tab-content active" id="jobsTab">
+            <div id="jobsList">
+                <div class="empty-state">
+                    <p>Loading jobs...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Tab -->
+        <div class="tab-content" id="photosTab">
+            <div class="ai-notice">
+                All photos and videos are verified for authenticity using AI analysis, GPS metadata, and timestamp validation.
+            </div>
+            
+            <div class="photo-section">
+                <div class="photo-section-title">
+                    Before Photos <span class="required">(Required)</span>
+                </div>
+                <div class="photo-grid" id="beforePhotos">
+                    <div class="photo-item" onclick="uploadPhoto('before')">+</div>
+                </div>
+            </div>
+            
+            <div class="photo-section">
+                <div class="photo-section-title">
+                    After Photos <span class="required">(Required)</span>
+                </div>
+                <div class="photo-grid" id="afterPhotos">
+                    <div class="photo-item" onclick="uploadPhoto('after')">+</div>
+                </div>
+            </div>
+            
+            <div class="photo-section">
+                <div class="photo-section-title">
+                    Damage Documentation
+                </div>
+                <div class="photo-grid" id="damagePhotos">
+                    <div class="photo-item" onclick="uploadPhoto('damage')">+</div>
+                </div>
+                <div class="form-group" style="margin-top: 12px;">
+                    <textarea class="form-input" id="damageNotes" rows="3" placeholder="Describe any pre-existing damage..."></textarea>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Video Walkthrough</div>
+                <p style="color: #666; font-size: 14px; margin-top: 8px;">Coming soon - Record before and after video walkthroughs</p>
             </div>
         </div>
 
         <!-- Earnings Tab -->
-        <div id="earningsTab" class="p-4 hidden">
-            <div class="bg-gray-800 rounded-xl p-4 mb-4">
-                <p class="text-gray-400 text-sm">Total Earnings</p>
-                <p class="text-3xl font-bold text-green-400" id="totalEarnings">$0.00</p>
+        <div class="tab-content" id="earningsTab">
+            <div class="earnings-total">
+                <div class="earnings-label">Total Earnings</div>
+                <div class="earnings-amount" id="totalEarnings">$0.00</div>
             </div>
-            <div class="bg-gray-800 rounded-xl p-4">
-                <p class="text-gray-400 text-sm mb-2">Jobs Completed</p>
-                <p class="text-2xl font-semibold" id="jobsCompleted">0</p>
+            
+            <div class="stripe-setup" id="stripeSetup">
+                <h3>Set Up Direct Deposit</h3>
+                <p>Connect your bank account to receive automatic payments</p>
+                <button class="btn btn-primary" onclick="setupStripe()">Connect Bank Account</button>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Payment Schedule</div>
+                <p style="color: #666; font-size: 14px; margin-top: 8px;">
+                    Once photos are approved, you'll receive automatic payment same business day.
+                </p>
+            </div>
+            
+            <div class="section-title">Payment History</div>
+            <div class="card">
+                <div id="paymentHistory">
+                    <div class="empty-state">
+                        <p>No payments yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div class="tab-content" id="profileTab">
+            <div class="card">
+                <div class="section-title" style="margin-top: 0;">Contact Information</div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" class="form-input" id="profilePhone" placeholder="(555) 555-5555">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="profileEmail" placeholder="you@email.com">
+                </div>
+                <button class="btn btn-secondary" onclick="saveProfile()">Save Contact Info</button>
+                
+                <div class="section-title">Home Address</div>
+                <div class="form-group">
+                    <label class="form-label">Street Address</label>
+                    <input type="text" class="form-input" id="profileAddress" placeholder="123 Main St">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" id="profileCity" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-input" id="profileState" placeholder="NJ" maxlength="2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ZIP Code</label>
+                    <input type="text" class="form-input" id="profileZip" placeholder="08000" maxlength="5" style="max-width: 120px;">
+                </div>
+                <button class="btn btn-secondary" onclick="saveAddress()">Save Address</button>
+            </div>
+            
+            <div class="section-title">Documents</div>
+            <div class="document-item">
+                <div>
+                    <div class="document-name">Driver's License / State ID</div>
+                    <div class="document-status required" id="dlStatus">Required - Not uploaded</div>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="uploadDocument('drivers_license')">Upload</button>
+            </div>
+            <div class="document-item">
+                <div>
+                    <div class="document-name">Insurance Certificate</div>
+                    <div class="document-status missing" id="insuranceStatus">Not uploaded</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="uploadDocument('insurance')">Upload</button>
+            </div>
+            <div class="document-item">
+                <div>
+                    <div class="document-name">Independent Contractor Agreement</div>
+                    <div class="document-status missing" id="icaStatus">Not signed</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="uploadDocument('ica')">Sign</button>
+            </div>
+            <div class="document-item">
+                <div>
+                    <div class="document-name">W-9 Form</div>
+                    <div class="document-status missing" id="w9Status">Not uploaded</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="uploadDocument('w9')">Upload</button>
+            </div>
+            
+            <div class="section-title">Performance Stats</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="statJobs">0</div>
+                    <div class="stat-label">Jobs Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statRating">-</div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statOnTime">-</div>
+                    <div class="stat-label">On-Time Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statIssues">0</div>
+                    <div class="stat-label">Quality Issues</div>
+                </div>
+            </div>
+            
+            <div class="section-title">Service Areas</div>
+            <div class="service-areas" id="serviceAreas">
+                <span class="service-area-tag">Contact admin to set up</span>
             </div>
         </div>
     </div>
 
     <!-- Job Detail Modal -->
-    <div id="jobModal" class="fixed inset-0 bg-black/80 z-50 hidden">
-        <div class="min-h-screen flex items-end sm:items-center justify-center">
-            <div class="bg-gray-800 w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[90vh] overflow-y-auto">
-                <div class="p-4 border-b border-gray-700 flex items-center justify-between sticky top-0 bg-gray-800">
-                    <h3 class="font-semibold text-lg">Job Details</h3>
-                    <button onclick="closeJobModal()" class="p-2 hover:bg-gray-700 rounded-lg">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                <div id="jobModalContent" class="p-4">
-                    <!-- Content filled by JS -->
-                </div>
+    <div class="modal" id="jobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Job Details</h3>
+                <button class="modal-close" onclick="closeJobModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="jobModalBody">
+                <!-- Filled by JS -->
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-20 left-4 right-4 bg-gray-700 text-white px-4 py-3 rounded-xl text-center transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        // ===== CONFIGURATION =====
+        // ===== CONFIG =====
         const API_BASE = 'https://x8ki-letl-twmt.n7.xano.io/api:O_MQ1nmN';
         
         // ===== STATE =====
         let currentWorker = null;
         let currentJobs = [];
         let selectedJob = null;
+        let jobTimer = null;
+        let timerSeconds = 0;
+        let timerRunning = false;
 
         // ===== UTILITIES =====
-        function showToast(message) {
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.className = 'toast', 3000);
         }
 
         function formatCurrency(amount) {
@@ -127,6 +891,17 @@
             return new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         }
 
+        function formatStatus(status) {
+            return (status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatTimer(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
         // ===== LOGIN =====
         async function login() {
             const pin = document.getElementById('pinInput').value;
@@ -134,7 +909,7 @@
             
             if (!pin || pin.length < 4) {
                 errorEl.textContent = 'Please enter your PIN';
-                errorEl.classList.remove('hidden');
+                errorEl.style.display = 'block';
                 return;
             }
 
@@ -146,54 +921,50 @@
                 });
                 
                 const data = await response.json();
-                console.log('Login response:', data);
                 
                 if (data.success) {
-                    currentWorker = {
-                        id: data.worker_id,
-                        name: data.name
-                    };
+                    currentWorker = { id: data.worker_id, name: data.name };
                     localStorage.setItem('crew_worker', JSON.stringify(currentWorker));
                     showMainApp();
                     loadJobs();
+                    loadProfile();
                 } else {
                     errorEl.textContent = data.message || 'Invalid PIN';
-                    errorEl.classList.remove('hidden');
+                    errorEl.style.display = 'block';
                 }
             } catch (error) {
-                console.error('Login error:', error);
                 errorEl.textContent = 'Connection error. Please try again.';
-                errorEl.classList.remove('hidden');
+                errorEl.style.display = 'block';
             }
         }
 
         function logout() {
             localStorage.removeItem('crew_worker');
             currentWorker = null;
-            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('pinInput').value = '';
         }
 
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('welcomeMsg').textContent = `Welcome, ${currentWorker.name}!`;
+            document.getElementById('mainApp').classList.add('active');
+            document.getElementById('welcomeMsg').textContent = `Welcome, ${currentWorker.name}`;
             document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', month: 'long', day: 'numeric' 
             });
         }
 
         // ===== TABS =====
-        function showTab(tab) {
-            document.getElementById('jobsTab').classList.toggle('hidden', tab !== 'jobs');
-            document.getElementById('earningsTab').classList.toggle('hidden', tab !== 'earnings');
-            document.getElementById('tabJobs').classList.toggle('tab-active', tab === 'jobs');
-            document.getElementById('tabEarnings').classList.toggle('tab-active', tab === 'earnings');
-            document.getElementById('tabJobs').classList.toggle('text-gray-400', tab !== 'jobs');
-            document.getElementById('tabEarnings').classList.toggle('text-gray-400', tab !== 'earnings');
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            if (tab === 'earnings') loadEarnings();
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            if (tabName === 'earnings') loadEarnings();
+            if (tabName === 'profile') loadProfile();
         }
 
         // ===== JOBS =====
@@ -203,56 +974,51 @@
             try {
                 const response = await fetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await response.json();
-                console.log('Jobs response:', data);
                 
                 currentJobs = data.jobs || [];
                 
                 if (currentJobs.length === 0) {
                     container.innerHTML = `
-                        <div class="text-center py-12">
-                            <p class="text-gray-500 text-lg">No active jobs</p>
-                            <p class="text-gray-600 text-sm mt-2">Check back later for new assignments</p>
+                        <div class="empty-state">
+                            <p>No active jobs</p>
+                            <p>Check back later for new assignments</p>
                         </div>
                     `;
                     return;
                 }
 
                 container.innerHTML = currentJobs.map(job => `
-                    <div class="job-card bg-gray-800 rounded-xl p-4 cursor-pointer" onclick="openJobModal(${job.id})">
-                        <div class="flex justify-between items-start mb-2">
+                    <div class="card" onclick="openJobModal(${job.id})" style="cursor: pointer;">
+                        <div class="card-header">
                             <div>
-                                <p class="font-semibold">${job.address || 'Address TBD'}</p>
-                                <p class="text-sm text-gray-400">${job.city || ''}, ${job.state || 'NJ'}</p>
+                                <div class="card-title">${job.address || 'Address TBD'}</div>
+                                <div class="card-subtitle">${job.city || ''}, ${job.state || 'NJ'}</div>
                             </div>
-                            <span class="px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(job.status)}">
-                                ${formatStatus(job.status)}
-                            </span>
+                            <span class="status-badge status-${job.status}">${formatStatus(job.status)}</span>
                         </div>
-                        <div class="flex justify-between text-sm mt-3">
-                            <span class="text-gray-400">📅 ${formatDate(job.scheduled_date)}</span>
-                            <span class="text-green-400 font-semibold">${formatCurrency(job.price_worker)}</span>
+                        <div class="job-details">
+                            <div>
+                                <div class="job-detail-label">Date</div>
+                                <div class="job-detail-value">${formatDate(job.scheduled_date)}</div>
+                            </div>
+                            <div>
+                                <div class="job-detail-label">Time</div>
+                                <div class="job-detail-value">${job.scheduled_time || 'TBD'}</div>
+                            </div>
+                            <div>
+                                <div class="job-detail-label">Sq Ft</div>
+                                <div class="job-detail-value">${job.sq_footage ? job.sq_footage.toLocaleString() : '-'}</div>
+                            </div>
+                            <div>
+                                <div class="job-detail-label">Your Pay</div>
+                                <div class="job-detail-value job-payout">${formatCurrency(job.price_worker)}</div>
+                            </div>
                         </div>
                     </div>
                 `).join('');
             } catch (error) {
-                console.error('Load jobs error:', error);
-                container.innerHTML = `<div class="text-center text-red-400 py-8">Failed to load jobs</div>`;
+                container.innerHTML = `<div class="empty-state"><p>Failed to load jobs</p></div>`;
             }
-        }
-
-        function getStatusColor(status) {
-            const colors = {
-                'scheduled': 'bg-blue-500/20 text-blue-400',
-                'confirmed': 'bg-purple-500/20 text-purple-400',
-                'in_progress': 'bg-yellow-500/20 text-yellow-400',
-                'pending_verification': 'bg-orange-500/20 text-orange-400',
-                'completed': 'bg-green-500/20 text-green-400'
-            };
-            return colors[status] || 'bg-gray-500/20 text-gray-400';
-        }
-
-        function formatStatus(status) {
-            return (status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
 
         // ===== JOB MODAL =====
@@ -260,78 +1026,116 @@
             selectedJob = currentJobs.find(j => j.id === jobId);
             if (!selectedJob) return;
 
-            const content = document.getElementById('jobModalContent');
-            content.innerHTML = `
-                <div class="space-y-4">
+            const body = document.getElementById('jobModalBody');
+            body.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div class="card-title" style="font-size: 18px;">${selectedJob.address || 'TBD'}</div>
+                    <div class="card-subtitle">${selectedJob.city || ''}, ${selectedJob.state || 'NJ'} ${selectedJob.zip || ''}</div>
+                    <a href="https://maps.google.com/?q=${encodeURIComponent(selectedJob.address + ', ' + selectedJob.city + ', ' + selectedJob.state)}" 
+                       target="_blank" style="color: #f97316; font-size: 14px; text-decoration: none;">
+                       Get Directions
+                    </a>
+                </div>
+                
+                <div class="job-details" style="border-top: none; padding-top: 0;">
                     <div>
-                        <p class="text-gray-400 text-sm">Address</p>
-                        <p class="font-semibold">${selectedJob.address || 'TBD'}</p>
-                        <p class="text-gray-400">${selectedJob.city || ''}, ${selectedJob.state || 'NJ'} ${selectedJob.zip || ''}</p>
+                        <div class="job-detail-label">Date</div>
+                        <div class="job-detail-value">${formatDate(selectedJob.scheduled_date)}</div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-gray-400 text-sm">Date</p>
-                            <p class="font-semibold">${formatDate(selectedJob.scheduled_date)}</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-400 text-sm">Time</p>
-                            <p class="font-semibold">${selectedJob.scheduled_time || 'TBD'}</p>
-                        </div>
+                    <div>
+                        <div class="job-detail-label">Time</div>
+                        <div class="job-detail-value">${selectedJob.scheduled_time || 'TBD'}</div>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-gray-400 text-sm">Job Type</p>
-                            <p class="font-semibold">${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-400 text-sm">Your Pay</p>
-                            <p class="font-semibold text-green-400">${formatCurrency(selectedJob.price_worker)}</p>
-                        </div>
+                    <div>
+                        <div class="job-detail-label">Job Type</div>
+                        <div class="job-detail-value">${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</div>
                     </div>
-
-                    ${selectedJob.special_instructions ? `
-                        <div>
-                            <p class="text-gray-400 text-sm">Instructions</p>
-                            <p class="bg-gray-700 rounded-lg p-3 mt-1">${selectedJob.special_instructions}</p>
-                        </div>
-                    ` : ''}
-
-                    <div class="pt-4 space-y-3">
-                        ${getJobActions(selectedJob)}
+                    <div>
+                        <div class="job-detail-label">Your Pay</div>
+                        <div class="job-detail-value job-payout">${formatCurrency(selectedJob.price_worker)}</div>
                     </div>
                 </div>
+                
+                ${selectedJob.special_instructions ? `
+                    <div style="margin-top: 16px;">
+                        <div class="job-detail-label">Instructions</div>
+                        <div style="background: #222; padding: 12px; border-radius: 8px; margin-top: 6px; font-size: 14px;">
+                            ${selectedJob.special_instructions}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="timer-box">
+                    <div class="timer-display" id="timerDisplay">${formatTimer(timerSeconds)}</div>
+                    <div class="timer-label">Job Timer</div>
+                    <button class="timer-btn" onclick="toggleTimer()">${timerRunning ? 'Pause' : 'Start Timer'}</button>
+                </div>
+                
+                <div class="checklist">
+                    <div class="checklist-title">Completion Checklist</div>
+                    <div class="checklist-item" onclick="toggleChecklist(this)">
+                        <div class="checklist-checkbox"></div>
+                        <div class="checklist-text">Take before photos</div>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklist(this)">
+                        <div class="checklist-checkbox"></div>
+                        <div class="checklist-text">Document any pre-existing damage</div>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklist(this)">
+                        <div class="checklist-checkbox"></div>
+                        <div class="checklist-text">Complete all cleaning tasks</div>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklist(this)">
+                        <div class="checklist-checkbox"></div>
+                        <div class="checklist-text">Take after photos</div>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklist(this)">
+                        <div class="checklist-checkbox"></div>
+                        <div class="checklist-text">Final walkthrough</div>
+                    </div>
+                </div>
+                
+                ${getJobActions(selectedJob)}
             `;
 
-            document.getElementById('jobModal').classList.remove('hidden');
+            document.getElementById('jobModal').classList.add('show');
+        }
+
+        function closeJobModal() {
+            document.getElementById('jobModal').classList.remove('show');
+            selectedJob = null;
         }
 
         function getJobActions(job) {
             switch(job.status) {
                 case 'scheduled':
                 case 'dispatched':
-                    return `
-                        <button onclick="startJob(${job.id})" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-semibold">
-                            🚀 Start Job
-                        </button>
-                    `;
+                    return `<button class="btn btn-primary" onclick="startJob(${job.id})">Start Job</button>`;
                 case 'in_progress':
-                    return `
-                        <button onclick="completeJob(${job.id})" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded-xl font-semibold">
-                            ✅ Mark Complete
-                        </button>
-                    `;
+                    return `<button class="btn btn-success" onclick="completeJob(${job.id})">Mark Complete</button>`;
                 case 'pending_verification':
-                    return `<p class="text-center text-yellow-400">⏳ Waiting for admin verification</p>`;
+                    return `<p style="text-align: center; color: #eab308; margin-top: 16px;">Waiting for admin verification</p>`;
                 default:
                     return '';
             }
         }
 
-        function closeJobModal() {
-            document.getElementById('jobModal').classList.add('hidden');
-            selectedJob = null;
+        function toggleChecklist(el) {
+            el.querySelector('.checklist-checkbox').classList.toggle('checked');
+        }
+
+        function toggleTimer() {
+            if (timerRunning) {
+                clearInterval(jobTimer);
+                timerRunning = false;
+            } else {
+                jobTimer = setInterval(() => {
+                    timerSeconds++;
+                    document.getElementById('timerDisplay').textContent = formatTimer(timerSeconds);
+                }, 1000);
+                timerRunning = true;
+            }
+            document.querySelector('.timer-btn').textContent = timerRunning ? 'Pause' : 'Start Timer';
         }
 
         // ===== JOB ACTIONS =====
@@ -344,18 +1148,16 @@
                 });
                 
                 const data = await response.json();
-                console.log('Start job response:', data);
                 
                 if (data.success) {
-                    showToast('Job started! 🚀');
+                    showToast('Job started');
                     closeJobModal();
                     loadJobs();
                 } else {
-                    showToast(data.message || 'Failed to start job');
+                    showToast(data.message || 'Failed to start job', 'error');
                 }
             } catch (error) {
-                console.error('Start job error:', error);
-                showToast('Connection error');
+                showToast('Connection error', 'error');
             }
         }
 
@@ -368,19 +1170,26 @@
                 });
                 
                 const data = await response.json();
-                console.log('Complete job response:', data);
                 
                 if (data.success) {
-                    showToast('Job completed! ✅');
+                    showToast('Job completed - pending verification');
                     closeJobModal();
                     loadJobs();
+                    timerSeconds = 0;
+                    timerRunning = false;
+                    if (jobTimer) clearInterval(jobTimer);
                 } else {
-                    showToast(data.message || 'Failed to complete job');
+                    showToast(data.message || 'Failed to complete job', 'error');
                 }
             } catch (error) {
-                console.error('Complete job error:', error);
-                showToast('Connection error');
+                showToast('Connection error', 'error');
             }
+        }
+
+        // ===== PHOTOS =====
+        function uploadPhoto(type) {
+            // TODO: Integrate with Cloudinary
+            showToast('Photo upload coming soon');
         }
 
         // ===== EARNINGS =====
@@ -388,30 +1197,137 @@
             try {
                 const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await response.json();
-                console.log('Earnings response:', data);
                 
                 const jobs = data.jobs || [];
-                const completedJobs = jobs.filter(j => j.status === 'completed' || j.status === 'verified' || j.status === 'paid');
+                const completedJobs = jobs.filter(j => ['completed', 'verified', 'paid'].includes(j.status));
                 const totalEarnings = completedJobs.reduce((sum, j) => sum + (j.price_worker || 0), 0);
                 
                 document.getElementById('totalEarnings').textContent = formatCurrency(totalEarnings);
-                document.getElementById('jobsCompleted').textContent = completedJobs.length;
+                
+                const historyEl = document.getElementById('paymentHistory');
+                if (completedJobs.length === 0) {
+                    historyEl.innerHTML = '<div class="empty-state"><p>No payments yet</p></div>';
+                } else {
+                    historyEl.innerHTML = completedJobs.map(job => `
+                        <div class="payment-item">
+                            <div>
+                                <div class="payment-date">${formatDate(job.completed_at || job.scheduled_date)}</div>
+                                <div class="payment-type">${formatStatus(job.job_type || job.service_type || 'Cleanup')}</div>
+                            </div>
+                            <div class="payment-amount">${formatCurrency(job.price_worker)}</div>
+                        </div>
+                    `).join('');
+                }
             } catch (error) {
-                console.error('Load earnings error:', error);
+                console.error('Failed to load earnings:', error);
             }
+        }
+
+        // ===== PROFILE =====
+        async function loadProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await response.json();
+                
+                if (data.worker) {
+                    const w = data.worker;
+                    document.getElementById('profilePhone').value = w.phone || '';
+                    document.getElementById('profileEmail').value = w.email || '';
+                    document.getElementById('profileAddress').value = w.address || '';
+                    document.getElementById('profileCity').value = w.city || '';
+                    document.getElementById('profileState').value = w.state || '';
+                    document.getElementById('profileZip').value = w.zip || '';
+                    
+                    document.getElementById('statJobs').textContent = w.total_jobs_completed || 0;
+                    document.getElementById('statRating').textContent = w.avg_rating ? w.avg_rating.toFixed(1) : '-';
+                    document.getElementById('statIssues').textContent = w.quality_issues || 0;
+                    
+                    if (w.counties_served && w.counties_served.length > 0) {
+                        document.getElementById('serviceAreas').innerHTML = w.counties_served.map(c => 
+                            `<span class="service-area-tag">${c}</span>`
+                        ).join('');
+                    }
+                    
+                    // Document status
+                    if (w.drivers_license_url) {
+                        document.getElementById('dlStatus').textContent = 'Uploaded';
+                        document.getElementById('dlStatus').className = 'document-status verified';
+                    }
+                    if (w.insurance_doc_url) {
+                        document.getElementById('insuranceStatus').textContent = 'Uploaded';
+                        document.getElementById('insuranceStatus').className = 'document-status verified';
+                    }
+                    if (w.ica_signed_at) {
+                        document.getElementById('icaStatus').textContent = 'Signed';
+                        document.getElementById('icaStatus').className = 'document-status verified';
+                    }
+                    if (w.w9_url) {
+                        document.getElementById('w9Status').textContent = 'Uploaded';
+                        document.getElementById('w9Status').className = 'document-status verified';
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+            }
+        }
+
+        async function saveProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/crew/save-profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        phone: document.getElementById('profilePhone').value,
+                        email: document.getElementById('profileEmail').value
+                    })
+                });
+                const data = await response.json();
+                showToast(data.success ? 'Profile saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (error) {
+                showToast('Connection error', 'error');
+            }
+        }
+
+        async function saveAddress() {
+            try {
+                const response = await fetch(`${API_BASE}/crew/save-address`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        address: document.getElementById('profileAddress').value,
+                        city: document.getElementById('profileCity').value,
+                        state: document.getElementById('profileState').value,
+                        zip: document.getElementById('profileZip').value
+                    })
+                });
+                const data = await response.json();
+                showToast(data.success ? 'Address saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (error) {
+                showToast('Connection error', 'error');
+            }
+        }
+
+        function uploadDocument(type) {
+            // TODO: Integrate with Cloudinary
+            showToast('Document upload coming soon');
+        }
+
+        function setupStripe() {
+            showToast('Payment setup coming soon');
         }
 
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', () => {
-            // Check for saved session
             const saved = localStorage.getItem('crew_worker');
             if (saved) {
                 currentWorker = JSON.parse(saved);
                 showMainApp();
                 loadJobs();
+                loadProfile();
             }
 
-            // Enter key to login
             document.getElementById('pinInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') login();
             });
