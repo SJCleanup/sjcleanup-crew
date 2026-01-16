@@ -8,13 +8,11 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #f8f9fa;
             color: #1a1a1a;
             min-height: 100vh;
         }
-        
-        /* Brand Colors */
         :root {
             --orange: #F97316;
             --orange-dark: #ea580c;
@@ -28,55 +26,36 @@
             --gray-500: #6b7280;
             --gray-600: #4b5563;
             --gray-700: #374151;
-            --gray-800: #1f2937;
             --green: #22c55e;
             --red: #ef4444;
         }
-        
-        /* Login Screen */
+
+        /* Login */
         .login-screen {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         .login-hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), 
                         url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200') center/cover;
-            padding: 60px 24px;
+            padding: 48px 24px;
             text-align: center;
             color: #fff;
         }
-        .login-hero h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .login-hero h1 span {
-            color: var(--orange);
-        }
-        .login-hero p {
-            color: rgba(255,255,255,0.8);
-            font-size: 16px;
-        }
+        .login-hero h1 { font-size: 32px; font-weight: 700; }
+        .login-hero h1 span { color: var(--orange); }
+        .login-hero p { color: rgba(255,255,255,0.7); margin-top: 4px; }
         .login-form {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 24px;
+            padding: 32px 24px;
             background: #fff;
         }
-        .login-box {
-            width: 100%;
-            max-width: 360px;
-        }
-        .login-label {
-            display: block;
-            color: var(--gray-600);
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
+        .login-box { width: 100%; max-width: 360px; }
+        .login-label { display: block; color: var(--gray-600); font-size: 14px; font-weight: 500; margin-bottom: 8px; }
         .login-input {
             width: 100%;
             background: var(--gray-50);
@@ -88,16 +67,9 @@
             letter-spacing: 8px;
             color: var(--dark);
             outline: none;
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
         }
-        .login-input:focus {
-            border-color: var(--orange);
-            background: #fff;
-        }
-        .login-input::placeholder {
-            color: var(--gray-300);
-            letter-spacing: 4px;
-        }
+        .login-input:focus { border-color: var(--orange); background: #fff; }
         .login-btn {
             width: 100%;
             background: var(--orange);
@@ -108,25 +80,16 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s;
-        }
-        .login-btn:hover {
-            background: var(--orange-dark);
-        }
-        .login-error {
-            color: var(--red);
-            text-align: center;
             margin-top: 16px;
-            font-size: 14px;
-            display: none;
+            font-family: inherit;
         }
-        
+        .login-btn:hover { background: var(--orange-dark); }
+        .login-error { color: var(--red); text-align: center; margin-top: 12px; font-size: 14px; display: none; }
+
         /* Main App */
         .main-app { display: none; }
         .main-app.active { display: block; }
-        
+
         /* Header */
         .header {
             background: var(--dark);
@@ -136,140 +99,96 @@
             align-items: center;
             color: #fff;
         }
-        .header-brand {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .header-brand span {
-            color: var(--orange);
-        }
-        .header-user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header-name {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-        }
+        .header-brand { font-size: 20px; font-weight: 700; }
+        .header-brand span { color: var(--orange); }
+        .header-info { text-align: right; }
+        .header-name { font-size: 14px; font-weight: 500; }
+        .header-id { font-size: 11px; color: var(--gray-400); }
         .logout-btn {
             background: rgba(255,255,255,0.1);
             border: none;
             color: #fff;
-            cursor: pointer;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 13px;
-            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            margin-left: 12px;
+            font-family: inherit;
         }
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        
+
         /* Tabs */
         .tabs {
             display: flex;
             background: #fff;
-            padding: 0 16px;
+            padding: 0 12px;
             border-bottom: 1px solid var(--gray-200);
             overflow-x: auto;
         }
         .tab {
-            background: transparent;
+            background: none;
             border: none;
             color: var(--gray-500);
-            padding: 16px 20px;
+            padding: 14px 16px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             border-bottom: 2px solid transparent;
             white-space: nowrap;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            font-family: inherit;
         }
-        .tab.active {
-            color: var(--orange);
-            border-bottom-color: var(--orange);
-        }
-        .tab:hover:not(.active) {
-            color: var(--gray-700);
-        }
-        
+        .tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
         /* Content */
-        .tab-content {
-            display: none;
-            padding: 20px 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        
+        .tab-content { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
         /* Cards */
         .card {
             background: #fff;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
             border: 1px solid var(--gray-100);
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
+        .card-title { font-weight: 600; font-size: 16px; color: var(--dark); }
+        .card-subtitle { color: var(--gray-500); font-size: 14px; margin-top: 2px; }
+
+        /* Worker Info Card */
+        .worker-card {
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2a2a 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
         }
-        .card-title {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--dark);
-        }
-        .card-subtitle {
-            color: var(--gray-500);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-        
-        /* Status Badge */
-        .status-badge {
+        .worker-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .worker-name { font-size: 20px; font-weight: 700; }
+        .worker-company { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 2px; }
+        .worker-id-badge {
+            background: var(--orange);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
         }
+        .worker-stats { display: flex; gap: 24px; margin-top: 20px; }
+        .worker-stat-value { font-size: 24px; font-weight: 700; color: var(--orange); }
+        .worker-stat-label { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Status Badge */
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
         .status-scheduled { background: #dbeafe; color: #1d4ed8; }
         .status-in_progress { background: var(--orange-light); color: var(--orange-dark); }
         .status-pending_verification { background: #fef3c7; color: #b45309; }
         .status-completed { background: #dcfce7; color: #16a34a; }
-        
+
         /* Job Grid */
-        .job-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--gray-100);
-        }
-        .job-grid-item label {
-            display: block;
-            font-size: 12px;
-            color: var(--gray-500);
-            margin-bottom: 4px;
-        }
-        .job-grid-item value {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        .job-payout {
-            color: var(--green) !important;
-            font-weight: 600 !important;
-        }
-        
+        .job-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100); }
+        .job-grid-item label { display: block; font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
+        .job-grid-item value { display: block; font-size: 14px; font-weight: 500; margin-top: 2px; }
+        .job-payout { color: var(--green) !important; font-weight: 600 !important; }
+
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -281,40 +200,15 @@
             font-weight: 600;
             cursor: pointer;
             border: none;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            font-family: inherit;
         }
-        .btn-block {
-            width: 100%;
-        }
-        .btn-primary {
-            background: var(--orange);
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background: var(--orange-dark);
-        }
-        .btn-success {
-            background: var(--green);
-            color: #fff;
-        }
-        .btn-secondary {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-        .btn-secondary:hover {
-            background: var(--gray-200);
-        }
-        .btn-sm {
-            padding: 8px 14px;
-            font-size: 13px;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--gray-300);
-            color: var(--gray-700);
-        }
-        
+        .btn-block { width: 100%; }
+        .btn-primary { background: var(--orange); color: #fff; }
+        .btn-primary:hover { background: var(--orange-dark); }
+        .btn-success { background: var(--green); color: #fff; }
+        .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
+        .btn-sm { padding: 8px 14px; font-size: 13px; }
+
         /* Section Title */
         .section-title {
             font-size: 11px;
@@ -324,207 +218,130 @@
             letter-spacing: 0.5px;
             margin: 24px 0 12px;
         }
-        .section-title:first-child {
-            margin-top: 0;
-        }
-        
-        /* Checklist */
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-        .checklist-item:last-child {
-            border-bottom: none;
-        }
-        .checklist-checkbox {
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--gray-300);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .checklist-checkbox.checked {
-            background: var(--orange);
-            border-color: var(--orange);
-        }
-        .checklist-checkbox.checked::after {
-            content: '';
-            width: 6px;
-            height: 10px;
-            border: solid #fff;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            margin-bottom: 2px;
-        }
-        .checklist-text {
-            font-size: 14px;
-            color: var(--gray-700);
-        }
-        
-        /* Timer */
-        .timer-card {
-            background: var(--gray-50);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .timer-display {
-            font-size: 42px;
-            font-weight: 700;
-            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-            color: var(--dark);
-        }
-        .timer-label {
-            color: var(--gray-500);
-            font-size: 13px;
-            margin-top: 4px;
-        }
-        .timer-btn {
-            margin-top: 16px;
-            padding: 10px 28px;
-        }
-        
+        .section-title:first-child { margin-top: 0; }
+
         /* AI Notice */
         .ai-notice {
             background: var(--orange-light);
-            border-left: 3px solid var(--orange);
-            padding: 14px 16px;
+            border-left: 4px solid var(--orange);
+            padding: 16px;
             margin-bottom: 24px;
-            font-size: 13px;
-            color: var(--orange-dark);
             border-radius: 0 8px 8px 0;
         }
-        
+        .ai-notice-title { font-weight: 600; color: var(--orange-dark); font-size: 14px; }
+        .ai-notice-text { color: var(--orange-dark); font-size: 13px; margin-top: 4px; }
+
+        /* Video Section - PRIMARY */
+        .video-section {
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2a2a 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: #fff;
+            text-align: center;
+        }
+        .video-section h3 { font-size: 18px; margin-bottom: 8px; }
+        .video-section p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 20px; }
+        .video-upload-area {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .video-upload-area:hover { border-color: var(--orange); background: rgba(249,115,22,0.1); }
+        .video-icon { font-size: 48px; margin-bottom: 12px; }
+        .video-upload-area span { display: block; color: rgba(255,255,255,0.8); }
+        .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+        .video-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .video-item-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+
         /* Photo Grid */
-        .photo-section {
-            margin-bottom: 28px;
-        }
+        .photo-section { margin-bottom: 24px; }
         .photo-section-title {
-            font-size: 14px;
-            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
-            color: var(--dark);
         }
-        .photo-section-title .required {
-            color: var(--orange);
-            font-weight: 500;
-            font-size: 12px;
-        }
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
+        .photo-section-title h4 { font-size: 14px; font-weight: 600; }
+        .photo-count { font-size: 12px; color: var(--gray-500); }
+        .photo-count.complete { color: var(--green); }
+        .photo-count.incomplete { color: var(--orange); }
+        .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .photo-item {
             aspect-ratio: 1;
             background: var(--gray-50);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: 2px dashed var(--gray-300);
             color: var(--gray-400);
-            font-size: 28px;
-            transition: all 0.2s;
+            font-size: 24px;
+            position: relative;
         }
-        .photo-item:hover {
-            border-color: var(--orange);
-            color: var(--orange);
-            background: var(--orange-light);
+        .photo-item:hover { border-color: var(--orange); color: var(--orange); }
+        .photo-item.required { border-color: var(--orange); }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+        .photo-item .required-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: var(--orange);
+            border-radius: 50%;
         }
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
+
         /* Earnings */
         .earnings-card {
-            background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, var(--dark) 0%, #2a2a2a 100%);
             border-radius: 16px;
             padding: 32px 24px;
             text-align: center;
             color: #fff;
             margin-bottom: 20px;
         }
-        .earnings-label {
-            color: rgba(255,255,255,0.7);
-            font-size: 14px;
+        .earnings-label { color: rgba(255,255,255,0.7); font-size: 14px; }
+        .earnings-amount { font-size: 48px; font-weight: 700; color: var(--green); margin-top: 4px; }
+        .payment-schedule { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 16px; }
+
+        /* Stripe Setup */
+        .stripe-card {
+            background: #fff;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .earnings-amount {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--green);
-            margin-top: 4px;
-        }
-        .payment-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-        .payment-item:last-child {
-            border-bottom: none;
-        }
-        .payment-date {
-            color: var(--gray-500);
-            font-size: 13px;
-        }
-        .payment-type {
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 2px;
-        }
-        .payment-amount {
-            font-weight: 600;
-            color: var(--green);
-            font-size: 15px;
-        }
-        
+        .stripe-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .stripe-card p { color: var(--gray-500); font-size: 14px; margin-bottom: 16px; }
+
         /* Forms */
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-label {
-            display: block;
-            color: var(--gray-600);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; color: var(--gray-600); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
         .form-input {
             width: 100%;
             background: #fff;
             border: 1px solid var(--gray-300);
             border-radius: 8px;
             padding: 12px 14px;
-            color: var(--dark);
             font-size: 15px;
             outline: none;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.2s;
+            font-family: inherit;
         }
-        .form-input:focus {
-            border-color: var(--orange);
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 12px;
-        }
-        
+        .form-input:focus { border-color: var(--orange); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+
         /* Documents */
         .document-item {
             display: flex;
@@ -536,31 +353,14 @@
             border-radius: 10px;
             margin-bottom: 10px;
         }
-        .document-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        .document-status {
-            font-size: 12px;
-            margin-top: 2px;
-        }
-        .document-status.verified {
-            color: var(--green);
-        }
-        .document-status.missing {
-            color: var(--gray-500);
-        }
-        .document-status.required {
-            color: var(--orange);
-        }
-        
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+        .document-name { font-size: 14px; font-weight: 500; }
+        .document-status { font-size: 12px; margin-top: 2px; }
+        .document-status.verified { color: var(--green); }
+        .document-status.missing { color: var(--gray-500); }
+        .document-status.required { color: var(--orange); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .stat-card {
             background: #fff;
             border: 1px solid var(--gray-200);
@@ -568,31 +368,13 @@
             padding: 20px;
             text-align: center;
         }
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--orange);
-        }
-        .stat-label {
-            font-size: 12px;
-            color: var(--gray-500);
-            margin-top: 4px;
-        }
-        
-        /* Service Areas */
-        .service-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .service-tag {
-            background: var(--gray-100);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--gray-700);
-        }
-        
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--orange); }
+        .stat-label { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+        /* Service Tags */
+        .service-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .service-tag { background: var(--gray-100); padding: 8px 14px; border-radius: 20px; font-size: 13px; }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -608,19 +390,11 @@
             opacity: 0;
             transition: all 0.3s;
             z-index: 1000;
-            font-size: 14px;
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast.success {
-            background: var(--green);
-        }
-        .toast.error {
-            background: var(--red);
-        }
-        
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--green); }
+        .toast.error { background: var(--red); }
+
         /* Modal */
         .modal {
             position: fixed;
@@ -631,9 +405,7 @@
             justify-content: center;
             z-index: 100;
         }
-        .modal.show {
-            display: flex;
-        }
+        .modal.show { display: flex; }
         .modal-content {
             background: #fff;
             width: 100%;
@@ -652,10 +424,7 @@
             top: 0;
             background: #fff;
         }
-        .modal-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-        }
+        .modal-header h3 { font-size: 18px; font-weight: 600; }
         .modal-close {
             background: var(--gray-100);
             border: none;
@@ -665,64 +434,76 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
+        }
+        .modal-body { padding: 20px; }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
-        .modal-body {
-            padding: 20px;
+        .checklist-checkbox.checked { background: var(--orange); border-color: var(--orange); }
+        .checklist-checkbox.checked::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
         }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: var(--gray-500);
-        }
-        .empty-state p {
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        
-        /* Stripe Setup */
-        .stripe-card {
-            background: #fff;
-            border: 1px solid var(--gray-200);
+
+        /* Timer */
+        .timer-card {
+            background: var(--gray-50);
             border-radius: 12px;
             padding: 24px;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
-        .stripe-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
+        .timer-display {
+            font-size: 42px;
+            font-weight: 700;
+            font-family: 'SF Mono', Monaco, monospace;
         }
-        .stripe-card p {
-            color: var(--gray-500);
-            font-size: 14px;
-            margin-bottom: 16px;
+        .timer-label { color: var(--gray-500); font-size: 13px; margin-top: 4px; }
+
+        /* Payment Item */
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
         }
-        
-        /* Link Style */
-        .link-orange {
-            color: var(--orange);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .link-orange:hover {
-            text-decoration: underline;
-        }
-        
+        .payment-item:last-child { border-bottom: none; }
+        .payment-date { color: var(--gray-500); font-size: 13px; }
+        .payment-type { font-weight: 500; margin-top: 2px; }
+        .payment-amount { font-weight: 600; color: var(--green); }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--gray-500); }
+
         /* Hide */
         .login-screen.hidden { display: none; }
-        
-        @media (min-width: 640px) {
-            .modal-content {
-                border-radius: 20px;
-                margin-bottom: 40px;
-            }
-        }
+
+        /* File Input Hidden */
+        .file-input { display: none; }
     </style>
 </head>
 <body>
@@ -735,7 +516,7 @@
         <div class="login-form">
             <div class="login-box">
                 <label class="login-label">Enter your PIN to sign in</label>
-                <input type="tel" id="pinInput" class="login-input" maxlength="6" placeholder="------" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" id="pinInput" class="login-input" maxlength="6" placeholder="------" inputmode="numeric">
                 <button class="login-btn" onclick="login()">Sign In</button>
                 <p class="login-error" id="loginError"></p>
             </div>
@@ -747,8 +528,11 @@
         <!-- Header -->
         <header class="header">
             <div class="header-brand"><span>SJ</span>Cleanup</div>
-            <div class="header-user">
-                <span class="header-name" id="welcomeMsg"></span>
+            <div style="display: flex; align-items: center;">
+                <div class="header-info">
+                    <div class="header-name" id="headerName"></div>
+                    <div class="header-id" id="headerId"></div>
+                </div>
                 <button class="logout-btn" onclick="logout()">Sign Out</button>
             </div>
         </header>
@@ -756,57 +540,84 @@
         <!-- Tabs -->
         <nav class="tabs">
             <button class="tab active" onclick="showTab('jobs')">Jobs</button>
-            <button class="tab" onclick="showTab('photos')">Photos</button>
+            <button class="tab" onclick="showTab('media')">Photos & Video</button>
             <button class="tab" onclick="showTab('earnings')">Earnings</button>
             <button class="tab" onclick="showTab('profile')">Profile</button>
         </nav>
 
         <!-- Jobs Tab -->
         <div class="tab-content active" id="jobsTab">
-            <div id="jobsList">
-                <div class="empty-state">
-                    <p>Loading jobs...</p>
-                </div>
-            </div>
+            <div id="jobsList"></div>
         </div>
 
-        <!-- Photos Tab -->
-        <div class="tab-content" id="photosTab">
+        <!-- Media Tab (Photos & Video) -->
+        <div class="tab-content" id="mediaTab">
             <div class="ai-notice">
-                All photos are verified for authenticity using AI analysis, GPS metadata, and timestamp validation.
+                <div class="ai-notice-title">AI Verification Active</div>
+                <div class="ai-notice-text">All photos and videos are verified for authenticity by AI using GPS, timestamp, and image analysis.</div>
             </div>
-            
+
+            <!-- Video Section - PRIMARY -->
+            <div class="video-section">
+                <h3>Video Walkthrough</h3>
+                <p>Record a walkthrough video showing the site before and after cleaning</p>
+                <div class="video-grid">
+                    <div class="video-item">
+                        <div class="video-upload-area" onclick="uploadVideo('before')">
+                            <div class="video-icon">🎥</div>
+                            <span>Before Video</span>
+                        </div>
+                    </div>
+                    <div class="video-item">
+                        <div class="video-upload-area" onclick="uploadVideo('after')">
+                            <div class="video-icon">🎥</div>
+                            <span>After Video</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Before Photos -->
             <div class="photo-section">
                 <div class="photo-section-title">
-                    Before Photos <span class="required">(Required)</span>
+                    <h4>Before Photos</h4>
+                    <span class="photo-count incomplete" id="beforeCount">0/4 minimum</span>
                 </div>
                 <div class="photo-grid" id="beforePhotos">
-                    <div class="photo-item" onclick="uploadPhoto('before')">+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('before')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('before')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('before')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('before')"><span class="required-dot"></span>+</div>
                 </div>
             </div>
-            
+
+            <!-- After Photos -->
             <div class="photo-section">
                 <div class="photo-section-title">
-                    After Photos <span class="required">(Required)</span>
+                    <h4>After Photos</h4>
+                    <span class="photo-count incomplete" id="afterCount">0/4 minimum</span>
                 </div>
                 <div class="photo-grid" id="afterPhotos">
-                    <div class="photo-item" onclick="uploadPhoto('after')">+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('after')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('after')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('after')"><span class="required-dot"></span>+</div>
+                    <div class="photo-item required" onclick="uploadPhoto('after')"><span class="required-dot"></span>+</div>
                 </div>
             </div>
-            
+
+            <!-- Damage Documentation -->
             <div class="photo-section">
-                <div class="photo-section-title">Damage Documentation</div>
+                <div class="photo-section-title">
+                    <h4>Damage Documentation</h4>
+                    <span class="photo-count" style="color: var(--gray-500);">Optional</span>
+                </div>
                 <div class="photo-grid" id="damagePhotos">
+                    <div class="photo-item" onclick="uploadPhoto('damage')">+</div>
                     <div class="photo-item" onclick="uploadPhoto('damage')">+</div>
                 </div>
                 <div class="form-group" style="margin-top: 12px;">
-                    <textarea class="form-input" id="damageNotes" rows="3" placeholder="Describe any pre-existing damage..."></textarea>
+                    <textarea class="form-input" id="damageNotes" rows="3" placeholder="Describe any pre-existing damage found on site..."></textarea>
                 </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-title">Video Walkthrough</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">Coming soon - Record before and after video walkthroughs</p>
             </div>
         </div>
 
@@ -815,35 +626,53 @@
             <div class="earnings-card">
                 <div class="earnings-label">Total Earnings</div>
                 <div class="earnings-amount" id="totalEarnings">$0.00</div>
+                <div class="payment-schedule">Once photos are approved, you'll receive automatic payment same business day</div>
             </div>
-            
+
             <div class="stripe-card" id="stripeSetup">
                 <h3>Set Up Direct Deposit</h3>
-                <p>Connect your bank account to receive automatic payments</p>
+                <p>Connect your bank account to receive automatic payments via Stripe</p>
                 <button class="btn btn-primary" onclick="setupStripe()">Connect Bank Account</button>
             </div>
-            
-            <div class="card">
-                <div class="card-title">Payment Schedule</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">
-                    Once photos are approved, you'll receive automatic payment same business day.
-                </p>
-            </div>
-            
+
             <div class="section-title">Payment History</div>
             <div class="card">
                 <div id="paymentHistory">
-                    <div class="empty-state">
-                        <p>No payments yet</p>
-                    </div>
+                    <div class="empty-state"><p>No payments yet</p></div>
                 </div>
             </div>
         </div>
 
         <!-- Profile Tab -->
         <div class="tab-content" id="profileTab">
+            <!-- Worker Info Card -->
+            <div class="worker-card">
+                <div class="worker-card-header">
+                    <div>
+                        <div class="worker-name" id="workerFullName">-</div>
+                        <div class="worker-company" id="workerCompany">-</div>
+                    </div>
+                    <div class="worker-id-badge" id="workerIdBadge">ID #-</div>
+                </div>
+                <div class="worker-stats">
+                    <div>
+                        <div class="worker-stat-value" id="workerJobs">0</div>
+                        <div class="worker-stat-label">Jobs</div>
+                    </div>
+                    <div>
+                        <div class="worker-stat-value" id="workerRating">-</div>
+                        <div class="worker-stat-label">Rating</div>
+                    </div>
+                    <div>
+                        <div class="worker-stat-value" id="workerEarned">$0</div>
+                        <div class="worker-stat-label">Earned</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Contact -->
             <div class="card">
-                <div class="section-title" style="margin-top: 0;">Contact Information</div>
+                <div class="section-title" style="margin-top: 0;">Personal Contact</div>
                 <div class="form-group">
                     <label class="form-label">Phone</label>
                     <input type="tel" class="form-input" id="profilePhone" placeholder="(555) 555-5555">
@@ -853,29 +682,65 @@
                     <input type="email" class="form-input" id="profileEmail" placeholder="you@email.com">
                 </div>
                 <button class="btn btn-secondary btn-block" onclick="saveProfile()">Save Contact Info</button>
-                
-                <div class="section-title">Home Address</div>
+            </div>
+
+            <!-- Home Address -->
+            <div class="card">
+                <div class="section-title" style="margin-top: 0;">Home Address (for 1099)</div>
                 <div class="form-group">
                     <label class="form-label">Street Address</label>
-                    <input type="text" class="form-input" id="profileAddress" placeholder="123 Main St">
+                    <input type="text" class="form-input" id="homeAddress" placeholder="123 Main St">
                 </div>
-                <div class="form-row">
+                <div class="form-row-3">
                     <div class="form-group">
                         <label class="form-label">City</label>
-                        <input type="text" class="form-input" id="profileCity" placeholder="City">
+                        <input type="text" class="form-input" id="homeCity" placeholder="City">
                     </div>
                     <div class="form-group">
                         <label class="form-label">State</label>
-                        <input type="text" class="form-input" id="profileState" placeholder="NJ" maxlength="2">
+                        <input type="text" class="form-input" id="homeState" placeholder="NJ" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP</label>
+                        <input type="text" class="form-input" id="homeZip" placeholder="08000" maxlength="5">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">ZIP Code</label>
-                    <input type="text" class="form-input" id="profileZip" placeholder="08000" maxlength="5" style="max-width: 120px;">
-                </div>
-                <button class="btn btn-secondary btn-block" onclick="saveAddress()">Save Address</button>
+                <button class="btn btn-secondary btn-block" onclick="saveHomeAddress()">Save Home Address</button>
             </div>
-            
+
+            <!-- Company Info -->
+            <div class="card">
+                <div class="section-title" style="margin-top: 0;">Company Information</div>
+                <div class="form-group">
+                    <label class="form-label">Company / Business Name</label>
+                    <input type="text" class="form-input" id="companyName" placeholder="Your Company LLC">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company Phone</label>
+                    <input type="tel" class="form-input" id="companyPhone" placeholder="(555) 555-5555">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company Address</label>
+                    <input type="text" class="form-input" id="companyAddress" placeholder="456 Business Ave">
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" id="companyCity" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-input" id="companyState" placeholder="NJ" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP</label>
+                        <input type="text" class="form-input" id="companyZip" placeholder="08000" maxlength="5">
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-block" onclick="saveCompanyInfo()">Save Company Info</button>
+            </div>
+
+            <!-- Documents -->
             <div class="section-title">Documents</div>
             <div class="document-item">
                 <div>
@@ -905,27 +770,8 @@
                 </div>
                 <button class="btn btn-sm btn-secondary" onclick="uploadDocument('w9')">Upload</button>
             </div>
-            
-            <div class="section-title">Performance</div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="statJobs">0</div>
-                    <div class="stat-label">Jobs Completed</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statRating">-</div>
-                    <div class="stat-label">Avg Rating</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statOnTime">-</div>
-                    <div class="stat-label">On-Time Rate</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statIssues">0</div>
-                    <div class="stat-label">Quality Issues</div>
-                </div>
-            </div>
-            
+
+            <!-- Service Areas -->
             <div class="section-title">Service Areas</div>
             <div class="service-tags" id="serviceAreas">
                 <span class="service-tag">Contact admin to set up</span>
@@ -933,12 +779,12 @@
         </div>
     </div>
 
-    <!-- Job Detail Modal -->
+    <!-- Job Modal -->
     <div class="modal" id="jobModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Job Details</h3>
-                <button class="modal-close" onclick="closeJobModal()">&times;</button>
+                <button class="modal-close" onclick="closeJobModal()">×</button>
             </div>
             <div class="modal-body" id="jobModalBody"></div>
         </div>
@@ -947,65 +793,68 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
+    <!-- Hidden File Inputs -->
+    <input type="file" id="photoInput" class="file-input" accept="image/*" onchange="handlePhotoUpload(event)">
+    <input type="file" id="videoInput" class="file-input" accept="video/*" onchange="handleVideoUpload(event)">
+    <input type="file" id="documentInput" class="file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleDocumentUpload(event)">
+
     <script>
-        // ===== CONFIG =====
         const API_BASE = 'https://x8ki-letl-twmt.n7.xano.io/api:O_MQ1nmN';
         
-        // ===== STATE =====
         let currentWorker = null;
         let currentJobs = [];
         let selectedJob = null;
-        let jobTimer = null;
+        let currentUploadType = null;
+        let currentDocType = null;
+        let timerInterval = null;
         let timerSeconds = 0;
-        let timerRunning = false;
 
-        // ===== UTILITIES =====
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => toast.className = 'toast', 3000);
+        // Utilities
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            setTimeout(() => t.className = 'toast', 3000);
         }
 
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0);
+        function formatCurrency(amt) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amt || 0);
         }
 
-        function formatDate(dateStr) {
-            if (!dateStr) return 'TBD';
-            return new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        function formatDate(d) {
+            if (!d) return 'TBD';
+            return new Date(d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
         }
 
-        function formatStatus(status) {
-            return (status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        function formatStatus(s) {
+            return (s || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
 
-        function formatTimer(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        function formatTimer(s) {
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
         }
 
-        // ===== LOGIN =====
+        // Login
         async function login() {
             const pin = document.getElementById('pinInput').value;
-            const errorEl = document.getElementById('loginError');
+            const err = document.getElementById('loginError');
             
             if (!pin || pin.length < 4) {
-                errorEl.textContent = 'Please enter your PIN';
-                errorEl.style.display = 'block';
+                err.textContent = 'Please enter your PIN';
+                err.style.display = 'block';
                 return;
             }
 
             try {
-                const response = await fetch(`${API_BASE}/crew/login`, {
+                const res = await fetch(`${API_BASE}/crew/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pin })
                 });
-                
-                const data = await response.json();
+                const data = await res.json();
                 
                 if (data.success) {
                     currentWorker = { id: data.worker_id, name: data.name };
@@ -1014,12 +863,12 @@
                     loadJobs();
                     loadProfile();
                 } else {
-                    errorEl.textContent = data.message || 'Invalid PIN';
-                    errorEl.style.display = 'block';
+                    err.textContent = data.message || 'Invalid PIN';
+                    err.style.display = 'block';
                 }
-            } catch (error) {
-                errorEl.textContent = 'Connection error. Please try again.';
-                errorEl.style.display = 'block';
+            } catch (e) {
+                err.textContent = 'Connection error';
+                err.style.display = 'block';
             }
         }
 
@@ -1034,152 +883,87 @@
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.add('active');
-            document.getElementById('welcomeMsg').textContent = currentWorker.name;
+            document.getElementById('headerName').textContent = currentWorker.name;
+            document.getElementById('headerId').textContent = `ID #${currentWorker.id}`;
         }
 
-        // ===== TABS =====
-        function showTab(tabName) {
+        // Tabs
+        function showTab(name) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
             event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            
-            if (tabName === 'earnings') loadEarnings();
-            if (tabName === 'profile') loadProfile();
+            document.getElementById(name + 'Tab').classList.add('active');
+            if (name === 'earnings') loadEarnings();
+            if (name === 'profile') loadProfile();
         }
 
-        // ===== JOBS =====
+        // Jobs
         async function loadJobs() {
             const container = document.getElementById('jobsList');
-            
             try {
-                const response = await fetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
-                const data = await response.json();
-                
+                const res = await fetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await res.json();
                 currentJobs = data.jobs || [];
                 
                 if (currentJobs.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <p style="font-size: 16px; color: var(--gray-600);">No active jobs</p>
-                            <p>Check back later for new assignments</p>
-                        </div>
-                    `;
+                    container.innerHTML = '<div class="empty-state"><p style="font-size:16px;color:var(--gray-600);">No active jobs</p><p>Check back later for new assignments</p></div>';
                     return;
                 }
 
-                container.innerHTML = currentJobs.map(job => `
-                    <div class="card" onclick="openJobModal(${job.id})" style="cursor: pointer;">
-                        <div class="card-header">
+                container.innerHTML = currentJobs.map(j => `
+                    <div class="card" onclick="openJobModal(${j.id})" style="cursor:pointer;">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                             <div>
-                                <div class="card-title">${job.address || 'Address TBD'}</div>
-                                <div class="card-subtitle">${job.city || ''}, ${job.state || 'NJ'}</div>
+                                <div class="card-title">${j.address || 'Address TBD'}</div>
+                                <div class="card-subtitle">${j.city || ''}, ${j.state || 'NJ'}</div>
                             </div>
-                            <span class="status-badge status-${job.status}">${formatStatus(job.status)}</span>
+                            <span class="status-badge status-${j.status}">${formatStatus(j.status)}</span>
                         </div>
                         <div class="job-grid">
-                            <div class="job-grid-item">
-                                <label>Date</label>
-                                <value>${formatDate(job.scheduled_date)}</value>
-                            </div>
-                            <div class="job-grid-item">
-                                <label>Time</label>
-                                <value>${job.scheduled_time || 'TBD'}</value>
-                            </div>
-                            <div class="job-grid-item">
-                                <label>Sq Ft</label>
-                                <value>${job.sq_footage ? job.sq_footage.toLocaleString() : '-'}</value>
-                            </div>
-                            <div class="job-grid-item">
-                                <label>Your Pay</label>
-                                <value class="job-payout">${formatCurrency(job.price_worker)}</value>
-                            </div>
+                            <div class="job-grid-item"><label>Date</label><value>${formatDate(j.scheduled_date)}</value></div>
+                            <div class="job-grid-item"><label>Time</label><value>${j.scheduled_time || 'TBD'}</value></div>
+                            <div class="job-grid-item"><label>Sq Ft</label><value>${j.sq_footage ? j.sq_footage.toLocaleString() : '-'}</value></div>
+                            <div class="job-grid-item"><label>Your Pay</label><value class="job-payout">${formatCurrency(j.price_worker)}</value></div>
                         </div>
                     </div>
                 `).join('');
-            } catch (error) {
-                container.innerHTML = `<div class="empty-state"><p>Failed to load jobs</p></div>`;
+            } catch (e) {
+                container.innerHTML = '<div class="empty-state"><p>Failed to load jobs</p></div>';
             }
         }
 
-        // ===== JOB MODAL =====
-        function openJobModal(jobId) {
-            selectedJob = currentJobs.find(j => j.id === jobId);
+        function openJobModal(id) {
+            selectedJob = currentJobs.find(j => j.id === id);
             if (!selectedJob) return;
 
             const body = document.getElementById('jobModalBody');
             body.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <div class="card-title" style="font-size: 18px;">${selectedJob.address || 'TBD'}</div>
+                <div style="margin-bottom:20px;">
+                    <div class="card-title" style="font-size:18px;">${selectedJob.address || 'TBD'}</div>
                     <div class="card-subtitle">${selectedJob.city || ''}, ${selectedJob.state || 'NJ'} ${selectedJob.zip || ''}</div>
-                    <a href="https://maps.google.com/?q=${encodeURIComponent(selectedJob.address + ', ' + selectedJob.city + ', ' + selectedJob.state)}" 
-                       target="_blank" class="link-orange" style="font-size: 14px; display: inline-block; margin-top: 8px;">
-                       Get Directions &rarr;
-                    </a>
+                    <a href="https://maps.google.com/?q=${encodeURIComponent(selectedJob.address+', '+selectedJob.city+', '+selectedJob.state)}" target="_blank" style="color:var(--orange);font-size:14px;text-decoration:none;display:inline-block;margin-top:8px;">Get Directions →</a>
                 </div>
-                
-                <div class="job-grid" style="border-top: none; padding-top: 0;">
-                    <div class="job-grid-item">
-                        <label>Date</label>
-                        <value>${formatDate(selectedJob.scheduled_date)}</value>
-                    </div>
-                    <div class="job-grid-item">
-                        <label>Time</label>
-                        <value>${selectedJob.scheduled_time || 'TBD'}</value>
-                    </div>
-                    <div class="job-grid-item">
-                        <label>Job Type</label>
-                        <value>${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</value>
-                    </div>
-                    <div class="job-grid-item">
-                        <label>Your Pay</label>
-                        <value class="job-payout">${formatCurrency(selectedJob.price_worker)}</value>
-                    </div>
+                <div class="job-grid" style="border-top:none;padding-top:0;">
+                    <div class="job-grid-item"><label>Date</label><value>${formatDate(selectedJob.scheduled_date)}</value></div>
+                    <div class="job-grid-item"><label>Time</label><value>${selectedJob.scheduled_time || 'TBD'}</value></div>
+                    <div class="job-grid-item"><label>Job Type</label><value>${formatStatus(selectedJob.job_type || 'Cleanup')}</value></div>
+                    <div class="job-grid-item"><label>Your Pay</label><value class="job-payout">${formatCurrency(selectedJob.price_worker)}</value></div>
                 </div>
-                
-                ${selectedJob.special_instructions ? `
-                    <div style="margin-top: 20px;">
-                        <label class="form-label">Instructions</label>
-                        <div style="background: var(--gray-50); padding: 14px; border-radius: 8px; font-size: 14px; color: var(--gray-700);">
-                            ${selectedJob.special_instructions}
-                        </div>
-                    </div>
-                ` : ''}
-                
+                ${selectedJob.special_instructions ? `<div style="margin-top:20px;"><label class="form-label">Instructions</label><div style="background:var(--gray-50);padding:14px;border-radius:8px;font-size:14px;">${selectedJob.special_instructions}</div></div>` : ''}
                 <div class="timer-card">
                     <div class="timer-display" id="timerDisplay">${formatTimer(timerSeconds)}</div>
                     <div class="timer-label">Job Timer</div>
-                    <button class="btn btn-secondary timer-btn" onclick="toggleTimer()">${timerRunning ? 'Pause' : 'Start Timer'}</button>
+                    <button class="btn btn-secondary" style="margin-top:12px;" onclick="toggleTimer()">${timerInterval ? 'Pause' : 'Start Timer'}</button>
                 </div>
-                
                 <div class="section-title">Completion Checklist</div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <div class="checklist-checkbox"></div>
-                    <div class="checklist-text">Take before photos</div>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <div class="checklist-checkbox"></div>
-                    <div class="checklist-text">Document any pre-existing damage</div>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <div class="checklist-checkbox"></div>
-                    <div class="checklist-text">Complete all cleaning tasks</div>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <div class="checklist-checkbox"></div>
-                    <div class="checklist-text">Take after photos</div>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <div class="checklist-checkbox"></div>
-                    <div class="checklist-text">Final walkthrough</div>
-                </div>
-                
-                <div style="margin-top: 24px;">
-                    ${getJobActions(selectedJob)}
-                </div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Record before video walkthrough</span></div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Take at least 4 before photos</span></div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Document any pre-existing damage</span></div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Complete all cleaning tasks</span></div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Take at least 4 after photos</span></div>
+                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Record after video walkthrough</span></div>
+                <div style="margin-top:24px;">${getJobActions(selectedJob)}</div>
             `;
-
             document.getElementById('jobModal').classList.add('show');
         }
 
@@ -1188,147 +972,184 @@
             selectedJob = null;
         }
 
-        function getJobActions(job) {
-            switch(job.status) {
-                case 'scheduled':
-                case 'dispatched':
-                    return `<button class="btn btn-primary btn-block" onclick="startJob(${job.id})">Start Job</button>`;
-                case 'in_progress':
-                    return `<button class="btn btn-success btn-block" onclick="completeJob(${job.id})">Mark Complete</button>`;
-                case 'pending_verification':
-                    return `<p style="text-align: center; color: var(--orange); font-weight: 500;">Waiting for admin verification</p>`;
-                default:
-                    return '';
+        function getJobActions(j) {
+            if (j.status === 'scheduled' || j.status === 'dispatched') {
+                return '<button class="btn btn-primary btn-block" onclick="startJob('+j.id+')">Start Job</button>';
+            } else if (j.status === 'in_progress') {
+                return '<button class="btn btn-success btn-block" onclick="completeJob('+j.id+')">Mark Complete</button>';
+            } else if (j.status === 'pending_verification') {
+                return '<p style="text-align:center;color:var(--orange);font-weight:500;">Waiting for admin verification</p>';
             }
-        }
-
-        function toggleChecklist(el) {
-            el.querySelector('.checklist-checkbox').classList.toggle('checked');
+            return '';
         }
 
         function toggleTimer() {
-            if (timerRunning) {
-                clearInterval(jobTimer);
-                timerRunning = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             } else {
-                jobTimer = setInterval(() => {
+                timerInterval = setInterval(() => {
                     timerSeconds++;
-                    document.getElementById('timerDisplay').textContent = formatTimer(timerSeconds);
+                    const el = document.getElementById('timerDisplay');
+                    if (el) el.textContent = formatTimer(timerSeconds);
                 }, 1000);
-                timerRunning = true;
             }
-            document.querySelector('.timer-btn').textContent = timerRunning ? 'Pause' : 'Start Timer';
         }
 
-        // ===== JOB ACTIONS =====
-        async function startJob(jobId) {
+        async function startJob(id) {
             try {
-                const response = await fetch(`${API_BASE}/crew/start-job`, {
+                const res = await fetch(`${API_BASE}/crew/start-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: jobId, crew_id: currentWorker.id })
+                    body: JSON.stringify({ job_id: id, crew_id: currentWorker.id })
                 });
-                
-                const data = await response.json();
-                
+                const data = await res.json();
                 if (data.success) {
                     showToast('Job started');
                     closeJobModal();
                     loadJobs();
                 } else {
-                    showToast(data.message || 'Failed to start job', 'error');
+                    showToast(data.message || 'Failed', 'error');
                 }
-            } catch (error) {
+            } catch (e) {
                 showToast('Connection error', 'error');
             }
         }
 
-        async function completeJob(jobId) {
+        async function completeJob(id) {
             try {
-                const response = await fetch(`${API_BASE}/crew/complete-job`, {
+                const res = await fetch(`${API_BASE}/crew/complete-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: jobId, crew_id: currentWorker.id })
+                    body: JSON.stringify({ job_id: id, crew_id: currentWorker.id })
                 });
-                
-                const data = await response.json();
-                
+                const data = await res.json();
                 if (data.success) {
                     showToast('Job completed - pending verification');
                     closeJobModal();
                     loadJobs();
                     timerSeconds = 0;
-                    timerRunning = false;
-                    if (jobTimer) clearInterval(jobTimer);
+                    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
                 } else {
-                    showToast(data.message || 'Failed to complete job', 'error');
+                    showToast(data.message || 'Failed', 'error');
                 }
-            } catch (error) {
+            } catch (e) {
                 showToast('Connection error', 'error');
             }
         }
 
-        // ===== PHOTOS =====
+        // Photo/Video Upload
         function uploadPhoto(type) {
-            showToast('Photo upload coming soon');
+            currentUploadType = type;
+            document.getElementById('photoInput').click();
         }
 
-        // ===== EARNINGS =====
+        function uploadVideo(type) {
+            currentUploadType = type + '_video';
+            document.getElementById('videoInput').click();
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            // TODO: Upload to Xano file storage
+            showToast(`${currentUploadType} photo selected - upload integration pending`);
+            e.target.value = '';
+        }
+
+        function handleVideoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            // TODO: Upload to Xano file storage
+            showToast(`${currentUploadType} selected - upload integration pending`);
+            e.target.value = '';
+        }
+
+        // Document Upload
+        function uploadDocument(type) {
+            currentDocType = type;
+            document.getElementById('documentInput').click();
+        }
+
+        function handleDocumentUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            // TODO: Upload to Xano file storage
+            showToast(`${currentDocType} document selected - upload integration pending`);
+            e.target.value = '';
+        }
+
+        // Earnings
         async function loadEarnings() {
             try {
-                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
-                const data = await response.json();
-                
+                const res = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await res.json();
                 const jobs = data.jobs || [];
-                const completedJobs = jobs.filter(j => ['completed', 'verified', 'paid'].includes(j.status));
-                const totalEarnings = completedJobs.reduce((sum, j) => sum + (j.price_worker || 0), 0);
+                const completed = jobs.filter(j => ['completed','verified','paid'].includes(j.status));
+                const total = completed.reduce((s, j) => s + (j.price_worker || 0), 0);
                 
-                document.getElementById('totalEarnings').textContent = formatCurrency(totalEarnings);
+                document.getElementById('totalEarnings').textContent = formatCurrency(total);
                 
-                const historyEl = document.getElementById('paymentHistory');
-                if (completedJobs.length === 0) {
-                    historyEl.innerHTML = '<div class="empty-state"><p>No payments yet</p></div>';
+                const hist = document.getElementById('paymentHistory');
+                if (completed.length === 0) {
+                    hist.innerHTML = '<div class="empty-state"><p>No payments yet</p></div>';
                 } else {
-                    historyEl.innerHTML = completedJobs.map(job => `
+                    hist.innerHTML = completed.map(j => `
                         <div class="payment-item">
                             <div>
-                                <div class="payment-date">${formatDate(job.completed_at || job.scheduled_date)}</div>
-                                <div class="payment-type">${formatStatus(job.job_type || job.service_type || 'Cleanup')}</div>
+                                <div class="payment-date">${formatDate(j.completed_at || j.scheduled_date)}</div>
+                                <div class="payment-type">${formatStatus(j.job_type || 'Cleanup')}</div>
                             </div>
-                            <div class="payment-amount">${formatCurrency(job.price_worker)}</div>
+                            <div class="payment-amount">${formatCurrency(j.price_worker)}</div>
                         </div>
                     `).join('');
                 }
-            } catch (error) {
-                console.error('Failed to load earnings:', error);
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        // ===== PROFILE =====
+        // Profile
         async function loadProfile() {
             try {
-                const response = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
-                const data = await response.json();
+                const res = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const data = await res.json();
                 
                 if (data.worker) {
                     const w = data.worker;
+                    
+                    // Header card
+                    document.getElementById('workerFullName').textContent = `${w.first_name || ''} ${w.last_name || ''}`.trim() || currentWorker.name;
+                    document.getElementById('workerCompany').textContent = w.company_name || w.business_name || 'Independent';
+                    document.getElementById('workerIdBadge').textContent = `ID #${currentWorker.id}`;
+                    document.getElementById('workerJobs').textContent = w.total_jobs_completed || 0;
+                    document.getElementById('workerRating').textContent = w.avg_rating ? w.avg_rating.toFixed(1) : '-';
+                    document.getElementById('workerEarned').textContent = formatCurrency(w.total_earnings);
+                    
+                    // Personal contact
                     document.getElementById('profilePhone').value = w.phone || '';
                     document.getElementById('profileEmail').value = w.email || '';
-                    document.getElementById('profileAddress').value = w.address || '';
-                    document.getElementById('profileCity').value = w.city || '';
-                    document.getElementById('profileState').value = w.state || '';
-                    document.getElementById('profileZip').value = w.zip || '';
                     
-                    document.getElementById('statJobs').textContent = w.total_jobs_completed || 0;
-                    document.getElementById('statRating').textContent = w.avg_rating ? w.avg_rating.toFixed(1) : '-';
-                    document.getElementById('statIssues').textContent = w.quality_issues || 0;
+                    // Home address
+                    document.getElementById('homeAddress').value = w.address || '';
+                    document.getElementById('homeCity').value = w.city || '';
+                    document.getElementById('homeState').value = w.state || '';
+                    document.getElementById('homeZip').value = w.zip || '';
                     
+                    // Company info
+                    document.getElementById('companyName').value = w.company_name || w.business_name || '';
+                    document.getElementById('companyPhone').value = w.company_phone || '';
+                    document.getElementById('companyAddress').value = w.company_address || '';
+                    document.getElementById('companyCity').value = w.company_city || '';
+                    document.getElementById('companyState').value = w.company_state || '';
+                    document.getElementById('companyZip').value = w.company_zip || '';
+                    
+                    // Service areas
                     if (w.counties_served && w.counties_served.length > 0) {
-                        document.getElementById('serviceAreas').innerHTML = w.counties_served.map(c => 
-                            `<span class="service-tag">${c}</span>`
-                        ).join('');
+                        document.getElementById('serviceAreas').innerHTML = w.counties_served.map(c => `<span class="service-tag">${c}</span>`).join('');
                     }
                     
+                    // Document status
                     if (w.drivers_license_url) {
                         document.getElementById('dlStatus').textContent = 'Uploaded';
                         document.getElementById('dlStatus').className = 'document-status verified';
@@ -1346,14 +1167,14 @@
                         document.getElementById('w9Status').className = 'document-status verified';
                     }
                 }
-            } catch (error) {
-                console.error('Failed to load profile:', error);
+            } catch (e) {
+                console.error(e);
             }
         }
 
         async function saveProfile() {
             try {
-                const response = await fetch(`${API_BASE}/crew/save-profile`, {
+                const res = await fetch(`${API_BASE}/crew/save-profile`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1362,42 +1183,60 @@
                         email: document.getElementById('profileEmail').value
                     })
                 });
-                const data = await response.json();
-                showToast(data.success ? 'Profile saved' : 'Failed to save', data.success ? 'success' : 'error');
-            } catch (error) {
+                const data = await res.json();
+                showToast(data.success ? 'Contact info saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (e) {
                 showToast('Connection error', 'error');
             }
         }
 
-        async function saveAddress() {
+        async function saveHomeAddress() {
             try {
-                const response = await fetch(`${API_BASE}/crew/save-address`, {
+                const res = await fetch(`${API_BASE}/crew/save-address`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         worker_id: currentWorker.id,
-                        address: document.getElementById('profileAddress').value,
-                        city: document.getElementById('profileCity').value,
-                        state: document.getElementById('profileState').value,
-                        zip: document.getElementById('profileZip').value
+                        address: document.getElementById('homeAddress').value,
+                        city: document.getElementById('homeCity').value,
+                        state: document.getElementById('homeState').value,
+                        zip: document.getElementById('homeZip').value
                     })
                 });
-                const data = await response.json();
-                showToast(data.success ? 'Address saved' : 'Failed to save', data.success ? 'success' : 'error');
-            } catch (error) {
+                const data = await res.json();
+                showToast(data.success ? 'Home address saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (e) {
                 showToast('Connection error', 'error');
             }
         }
 
-        function uploadDocument(type) {
-            showToast('Document upload coming soon');
+        async function saveCompanyInfo() {
+            try {
+                const res = await fetch(`${API_BASE}/crew/save-company`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        worker_id: currentWorker.id,
+                        company_name: document.getElementById('companyName').value,
+                        company_phone: document.getElementById('companyPhone').value,
+                        company_address: document.getElementById('companyAddress').value,
+                        company_city: document.getElementById('companyCity').value,
+                        company_state: document.getElementById('companyState').value,
+                        company_zip: document.getElementById('companyZip').value
+                    })
+                });
+                const data = await res.json();
+                showToast(data.success ? 'Company info saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (e) {
+                showToast('Connection error', 'error');
+            }
         }
 
         function setupStripe() {
-            showToast('Payment setup coming soon');
+            showToast('Stripe Connect setup coming soon');
         }
 
-        // ===== INIT =====
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
             const saved = localStorage.getItem('crew_worker');
             if (saved) {
@@ -1406,8 +1245,7 @@
                 loadJobs();
                 loadProfile();
             }
-
-            document.getElementById('pinInput').addEventListener('keypress', (e) => {
+            document.getElementById('pinInput').addEventListener('keypress', e => {
                 if (e.key === 'Enter') login();
             });
         });
