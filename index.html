@@ -4,13 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SJCleanup - Crew Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #111;
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
             min-height: 100vh;
+        }
+        
+        /* Brand Colors */
+        :root {
+            --orange: #F97316;
+            --orange-dark: #ea580c;
+            --orange-light: #fff7ed;
+            --dark: #1a1a1a;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --green: #22c55e;
+            --red: #ef4444;
         }
         
         /* Login Screen */
@@ -18,54 +38,69 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+        .login-hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200') center/cover;
+            padding: 60px 24px;
+            text-align: center;
+            color: #fff;
+        }
+        .login-hero h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .login-hero h1 span {
+            color: var(--orange);
+        }
+        .login-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+        }
+        .login-form {
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 40px 24px;
+            background: #fff;
         }
         .login-box {
             width: 100%;
             max-width: 360px;
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 32px 24px;
-        }
-        .login-logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .login-logo h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #f97316;
-        }
-        .login-logo p {
-            color: #666;
-            margin-top: 4px;
         }
         .login-label {
             display: block;
-            color: #888;
+            color: var(--gray-600);
             font-size: 14px;
+            font-weight: 500;
             margin-bottom: 8px;
         }
         .login-input {
             width: 100%;
-            background: #222;
-            border: 2px solid #333;
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
             border-radius: 12px;
             padding: 16px;
             font-size: 24px;
             text-align: center;
             letter-spacing: 8px;
-            color: #fff;
+            color: var(--dark);
             outline: none;
+            font-family: 'Inter', sans-serif;
         }
         .login-input:focus {
-            border-color: #f97316;
+            border-color: var(--orange);
+            background: #fff;
+        }
+        .login-input::placeholder {
+            color: var(--gray-300);
+            letter-spacing: 4px;
         }
         .login-btn {
             width: 100%;
-            background: #f97316;
+            background: var(--orange);
             color: #fff;
             border: none;
             border-radius: 12px;
@@ -73,15 +108,17 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 16px;
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
         }
         .login-btn:hover {
-            background: #ea580c;
+            background: var(--orange-dark);
         }
         .login-error {
-            color: #ef4444;
+            color: var(--red);
             text-align: center;
-            margin-top: 12px;
+            margin-top: 16px;
             font-size: 14px;
             display: none;
         }
@@ -92,66 +129,78 @@
         
         /* Header */
         .header {
-            background: #1a1a1a;
+            background: var(--dark);
             padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            color: #fff;
         }
-        .header-title {
-            font-size: 18px;
-            font-weight: 600;
+        .header-brand {
+            font-size: 20px;
+            font-weight: 700;
         }
-        .header-date {
-            font-size: 12px;
-            color: #666;
-            margin-top: 2px;
+        .header-brand span {
+            color: var(--orange);
+        }
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-name {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
         }
         .logout-btn {
-            background: none;
+            background: rgba(255,255,255,0.1);
             border: none;
-            color: #666;
+            color: #fff;
             cursor: pointer;
-            padding: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
         }
         .logout-btn:hover {
-            color: #fff;
+            background: rgba(255,255,255,0.2);
         }
         
         /* Tabs */
         .tabs {
             display: flex;
-            background: #1a1a1a;
-            padding: 8px 12px;
-            gap: 8px;
-            border-bottom: 1px solid #333;
+            background: #fff;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--gray-200);
+            overflow-x: auto;
         }
         .tab {
-            flex: 1;
             background: transparent;
             border: none;
-            color: #666;
-            padding: 12px 8px;
+            color: var(--gray-500);
+            padding: 16px 20px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            border-radius: 8px;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
             transition: all 0.2s;
         }
         .tab.active {
-            background: #f97316;
-            color: #fff;
+            color: var(--orange);
+            border-bottom-color: var(--orange);
         }
         .tab:hover:not(.active) {
-            background: #222;
-            color: #fff;
+            color: var(--gray-700);
         }
         
-        /* Tab Content */
+        /* Content */
         .tab-content {
             display: none;
-            padding: 16px;
+            padding: 20px 16px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         .tab-content.active {
             display: block;
@@ -159,113 +208,133 @@
         
         /* Cards */
         .card {
-            background: #1a1a1a;
+            background: #fff;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid var(--gray-100);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         .card-title {
             font-weight: 600;
             font-size: 16px;
+            color: var(--dark);
         }
         .card-subtitle {
-            color: #666;
+            color: var(--gray-500);
             font-size: 14px;
-            margin-top: 2px;
+            margin-top: 4px;
         }
         
         /* Status Badge */
         .status-badge {
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
         }
-        .status-scheduled { background: #3b82f620; color: #60a5fa; }
-        .status-in_progress { background: #f9731620; color: #f97316; }
-        .status-pending_verification { background: #eab30820; color: #eab308; }
-        .status-completed { background: #22c55e20; color: #22c55e; }
+        .status-scheduled { background: #dbeafe; color: #1d4ed8; }
+        .status-in_progress { background: var(--orange-light); color: var(--orange-dark); }
+        .status-pending_verification { background: #fef3c7; color: #b45309; }
+        .status-completed { background: #dcfce7; color: #16a34a; }
         
-        /* Job Details */
-        .job-details {
+        /* Job Grid */
+        .job-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #333;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-100);
         }
-        .job-detail-label {
-            color: #666;
+        .job-grid-item label {
+            display: block;
             font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
         }
-        .job-detail-value {
+        .job-grid-item value {
+            display: block;
             font-size: 14px;
-            margin-top: 2px;
+            font-weight: 500;
+            color: var(--dark);
         }
         .job-payout {
-            color: #22c55e;
-            font-weight: 600;
+            color: var(--green) !important;
+            font-weight: 600 !important;
         }
         
         /* Buttons */
         .btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             border: none;
-            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .btn-block {
+            width: 100%;
         }
         .btn-primary {
-            background: #f97316;
+            background: var(--orange);
             color: #fff;
         }
         .btn-primary:hover {
-            background: #ea580c;
+            background: var(--orange-dark);
         }
         .btn-success {
-            background: #22c55e;
+            background: var(--green);
             color: #fff;
-        }
-        .btn-success:hover {
-            background: #16a34a;
         }
         .btn-secondary {
-            background: #333;
-            color: #fff;
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+        .btn-secondary:hover {
+            background: var(--gray-200);
         }
         .btn-sm {
-            padding: 10px 16px;
-            font-size: 14px;
-            width: auto;
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+        
+        /* Section Title */
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 24px 0 12px;
+        }
+        .section-title:first-child {
             margin-top: 0;
         }
         
         /* Checklist */
-        .checklist {
-            margin-top: 16px;
-        }
-        .checklist-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #888;
-            margin-bottom: 12px;
-        }
         .checklist-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #222;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
         }
         .checklist-item:last-child {
             border-bottom: none;
@@ -273,17 +342,18 @@
         .checklist-checkbox {
             width: 22px;
             height: 22px;
-            border: 2px solid #444;
+            border: 2px solid var(--gray-300);
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: all 0.2s;
         }
         .checklist-checkbox.checked {
-            background: #f97316;
-            border-color: #f97316;
+            background: var(--orange);
+            border-color: var(--orange);
         }
         .checklist-checkbox.checked::after {
             content: '';
@@ -296,186 +366,158 @@
         }
         .checklist-text {
             font-size: 14px;
+            color: var(--gray-700);
         }
         
         /* Timer */
-        .timer-box {
-            background: #222;
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 16px;
+        .timer-card {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 24px;
             text-align: center;
+            margin: 20px 0;
         }
         .timer-display {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 700;
-            font-family: 'SF Mono', Monaco, monospace;
-            color: #f97316;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            color: var(--dark);
         }
         .timer-label {
-            color: #666;
-            font-size: 12px;
+            color: var(--gray-500);
+            font-size: 13px;
             margin-top: 4px;
         }
         .timer-btn {
-            margin-top: 12px;
-            padding: 10px 24px;
-            background: #333;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
+            margin-top: 16px;
+            padding: 10px 28px;
         }
         
-        /* Photos Section */
+        /* AI Notice */
+        .ai-notice {
+            background: var(--orange-light);
+            border-left: 3px solid var(--orange);
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--orange-dark);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* Photo Grid */
         .photo-section {
-            margin-bottom: 20px;
+            margin-bottom: 28px;
         }
         .photo-section-title {
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: var(--dark);
         }
         .photo-section-title .required {
-            color: #f97316;
+            color: var(--orange);
+            font-weight: 500;
             font-size: 12px;
         }
         .photo-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
         .photo-item {
             aspect-ratio: 1;
-            background: #222;
-            border-radius: 8px;
+            background: var(--gray-50);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border: 2px dashed #333;
-            color: #666;
-            font-size: 24px;
+            border: 2px dashed var(--gray-300);
+            color: var(--gray-400);
+            font-size: 28px;
+            transition: all 0.2s;
+        }
+        .photo-item:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            background: var(--orange-light);
         }
         .photo-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 6px;
-        }
-        .photo-item:hover {
-            border-color: #f97316;
-            color: #f97316;
-        }
-        
-        /* AI Notice */
-        .ai-notice {
-            background: #f9731610;
-            border: 1px solid #f9731640;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #f97316;
+            border-radius: 8px;
         }
         
         /* Earnings */
-        .earnings-total {
-            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+        .earnings-card {
+            background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%);
             border-radius: 16px;
-            padding: 24px;
+            padding: 32px 24px;
             text-align: center;
-            margin-bottom: 16px;
+            color: #fff;
+            margin-bottom: 20px;
         }
         .earnings-label {
-            color: #666;
+            color: rgba(255,255,255,0.7);
             font-size: 14px;
         }
         .earnings-amount {
-            font-size: 42px;
+            font-size: 48px;
             font-weight: 700;
-            color: #22c55e;
+            color: var(--green);
             margin-top: 4px;
         }
         .payment-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid #222;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
         }
         .payment-item:last-child {
             border-bottom: none;
         }
         .payment-date {
-            color: #666;
+            color: var(--gray-500);
             font-size: 13px;
         }
         .payment-type {
             font-size: 14px;
+            font-weight: 500;
             margin-top: 2px;
         }
         .payment-amount {
             font-weight: 600;
-            color: #22c55e;
+            color: var(--green);
+            font-size: 15px;
         }
         
-        /* Stripe Setup */
-        .stripe-setup {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-        .stripe-setup h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .stripe-setup p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        
-        /* Profile */
-        .section-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            margin-top: 24px;
-        }
-        .section-title:first-child {
-            margin-top: 0;
-        }
+        /* Forms */
         .form-group {
             margin-bottom: 16px;
         }
         .form-label {
             display: block;
-            color: #888;
+            color: var(--gray-600);
             font-size: 13px;
+            font-weight: 500;
             margin-bottom: 6px;
         }
         .form-input {
             width: 100%;
-            background: #222;
-            border: 1px solid #333;
+            background: #fff;
+            border: 1px solid var(--gray-300);
             border-radius: 8px;
-            padding: 12px;
-            color: #fff;
+            padding: 12px 14px;
+            color: var(--dark);
             font-size: 15px;
             outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
         }
         .form-input:focus {
-            border-color: #f97316;
+            border-color: var(--orange);
         }
         .form-row {
             display: grid;
@@ -488,26 +530,29 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px;
-            background: #1a1a1a;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid var(--gray-200);
             border-radius: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .document-name {
             font-size: 14px;
+            font-weight: 500;
+            color: var(--dark);
         }
         .document-status {
             font-size: 12px;
             margin-top: 2px;
         }
         .document-status.verified {
-            color: #22c55e;
+            color: var(--green);
         }
         .document-status.missing {
-            color: #ef4444;
+            color: var(--gray-500);
         }
         .document-status.required {
-            color: #f97316;
+            color: var(--orange);
         }
         
         /* Stats */
@@ -516,34 +561,36 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
-        .stat-item {
-            background: #1a1a1a;
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--gray-200);
             border-radius: 10px;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
         }
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            color: #f97316;
+            color: var(--orange);
         }
         .stat-label {
             font-size: 12px;
-            color: #666;
+            color: var(--gray-500);
             margin-top: 4px;
         }
         
         /* Service Areas */
-        .service-areas {
+        .service-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
-        .service-area-tag {
-            background: #222;
+        .service-tag {
+            background: var(--gray-100);
             padding: 8px 14px;
             border-radius: 20px;
             font-size: 13px;
+            color: var(--gray-700);
         }
         
         /* Toast */
@@ -552,32 +599,33 @@
             bottom: 24px;
             left: 16px;
             right: 16px;
-            background: #333;
+            background: var(--dark);
             color: #fff;
-            padding: 14px 20px;
+            padding: 16px 20px;
             border-radius: 10px;
             text-align: center;
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s;
             z-index: 1000;
+            font-size: 14px;
         }
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
         .toast.success {
-            background: #22c55e;
+            background: var(--green);
         }
         .toast.error {
-            background: #ef4444;
+            background: var(--red);
         }
         
         /* Modal */
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.5);
             display: none;
             align-items: flex-end;
             justify-content: center;
@@ -587,7 +635,7 @@
             display: flex;
         }
         .modal-content {
-            background: #1a1a1a;
+            background: #fff;
             width: 100%;
             max-width: 500px;
             border-radius: 20px 20px 0 0;
@@ -598,22 +646,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid #333;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
             position: sticky;
             top: 0;
-            background: #1a1a1a;
+            background: #fff;
         }
         .modal-header h3 {
             font-size: 18px;
+            font-weight: 600;
         }
         .modal-close {
-            background: none;
+            background: var(--gray-100);
             border: none;
-            color: #666;
-            font-size: 24px;
+            color: var(--gray-600);
+            font-size: 20px;
             cursor: pointer;
-            padding: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .modal-body {
             padding: 20px;
@@ -623,29 +677,68 @@
         .empty-state {
             text-align: center;
             padding: 48px 24px;
-            color: #666;
+            color: var(--gray-500);
         }
         .empty-state p {
             margin-top: 8px;
             font-size: 14px;
         }
         
-        /* Hide login when app is shown */
+        /* Stripe Setup */
+        .stripe-card {
+            background: #fff;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stripe-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .stripe-card p {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        /* Link Style */
+        .link-orange {
+            color: var(--orange);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .link-orange:hover {
+            text-decoration: underline;
+        }
+        
+        /* Hide */
         .login-screen.hidden { display: none; }
+        
+        @media (min-width: 640px) {
+            .modal-content {
+                border-radius: 20px;
+                margin-bottom: 40px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
-        <div class="login-box">
-            <div class="login-logo">
-                <h1>SJCleanup</h1>
-                <p>Crew Portal</p>
+        <div class="login-hero">
+            <h1><span>SJ</span>Cleanup</h1>
+            <p>Crew Portal</p>
+        </div>
+        <div class="login-form">
+            <div class="login-box">
+                <label class="login-label">Enter your PIN to sign in</label>
+                <input type="tel" id="pinInput" class="login-input" maxlength="6" placeholder="------" inputmode="numeric" pattern="[0-9]*">
+                <button class="login-btn" onclick="login()">Sign In</button>
+                <p class="login-error" id="loginError"></p>
             </div>
-            <label class="login-label">Enter your PIN</label>
-            <input type="tel" id="pinInput" class="login-input" maxlength="6" placeholder="------" inputmode="numeric" pattern="[0-9]*">
-            <button class="login-btn" onclick="login()">Sign In</button>
-            <p class="login-error" id="loginError"></p>
         </div>
     </div>
 
@@ -653,15 +746,11 @@
     <div class="main-app" id="mainApp">
         <!-- Header -->
         <header class="header">
-            <div>
-                <div class="header-title" id="welcomeMsg">Welcome</div>
-                <div class="header-date" id="todayDate"></div>
+            <div class="header-brand"><span>SJ</span>Cleanup</div>
+            <div class="header-user">
+                <span class="header-name" id="welcomeMsg"></span>
+                <button class="logout-btn" onclick="logout()">Sign Out</button>
             </div>
-            <button class="logout-btn" onclick="logout()">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-                </svg>
-            </button>
         </header>
 
         <!-- Tabs -->
@@ -684,7 +773,7 @@
         <!-- Photos Tab -->
         <div class="tab-content" id="photosTab">
             <div class="ai-notice">
-                All photos and videos are verified for authenticity using AI analysis, GPS metadata, and timestamp validation.
+                All photos are verified for authenticity using AI analysis, GPS metadata, and timestamp validation.
             </div>
             
             <div class="photo-section">
@@ -706,9 +795,7 @@
             </div>
             
             <div class="photo-section">
-                <div class="photo-section-title">
-                    Damage Documentation
-                </div>
+                <div class="photo-section-title">Damage Documentation</div>
                 <div class="photo-grid" id="damagePhotos">
                     <div class="photo-item" onclick="uploadPhoto('damage')">+</div>
                 </div>
@@ -719,18 +806,18 @@
             
             <div class="card">
                 <div class="card-title">Video Walkthrough</div>
-                <p style="color: #666; font-size: 14px; margin-top: 8px;">Coming soon - Record before and after video walkthroughs</p>
+                <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">Coming soon - Record before and after video walkthroughs</p>
             </div>
         </div>
 
         <!-- Earnings Tab -->
         <div class="tab-content" id="earningsTab">
-            <div class="earnings-total">
+            <div class="earnings-card">
                 <div class="earnings-label">Total Earnings</div>
                 <div class="earnings-amount" id="totalEarnings">$0.00</div>
             </div>
             
-            <div class="stripe-setup" id="stripeSetup">
+            <div class="stripe-card" id="stripeSetup">
                 <h3>Set Up Direct Deposit</h3>
                 <p>Connect your bank account to receive automatic payments</p>
                 <button class="btn btn-primary" onclick="setupStripe()">Connect Bank Account</button>
@@ -738,7 +825,7 @@
             
             <div class="card">
                 <div class="card-title">Payment Schedule</div>
-                <p style="color: #666; font-size: 14px; margin-top: 8px;">
+                <p style="color: var(--gray-500); font-size: 14px; margin-top: 8px;">
                     Once photos are approved, you'll receive automatic payment same business day.
                 </p>
             </div>
@@ -765,7 +852,7 @@
                     <label class="form-label">Email</label>
                     <input type="email" class="form-input" id="profileEmail" placeholder="you@email.com">
                 </div>
-                <button class="btn btn-secondary" onclick="saveProfile()">Save Contact Info</button>
+                <button class="btn btn-secondary btn-block" onclick="saveProfile()">Save Contact Info</button>
                 
                 <div class="section-title">Home Address</div>
                 <div class="form-group">
@@ -786,7 +873,7 @@
                     <label class="form-label">ZIP Code</label>
                     <input type="text" class="form-input" id="profileZip" placeholder="08000" maxlength="5" style="max-width: 120px;">
                 </div>
-                <button class="btn btn-secondary" onclick="saveAddress()">Save Address</button>
+                <button class="btn btn-secondary btn-block" onclick="saveAddress()">Save Address</button>
             </div>
             
             <div class="section-title">Documents</div>
@@ -819,29 +906,29 @@
                 <button class="btn btn-sm btn-secondary" onclick="uploadDocument('w9')">Upload</button>
             </div>
             
-            <div class="section-title">Performance Stats</div>
+            <div class="section-title">Performance</div>
             <div class="stats-grid">
-                <div class="stat-item">
+                <div class="stat-card">
                     <div class="stat-value" id="statJobs">0</div>
                     <div class="stat-label">Jobs Completed</div>
                 </div>
-                <div class="stat-item">
+                <div class="stat-card">
                     <div class="stat-value" id="statRating">-</div>
                     <div class="stat-label">Avg Rating</div>
                 </div>
-                <div class="stat-item">
+                <div class="stat-card">
                     <div class="stat-value" id="statOnTime">-</div>
                     <div class="stat-label">On-Time Rate</div>
                 </div>
-                <div class="stat-item">
+                <div class="stat-card">
                     <div class="stat-value" id="statIssues">0</div>
                     <div class="stat-label">Quality Issues</div>
                 </div>
             </div>
             
             <div class="section-title">Service Areas</div>
-            <div class="service-areas" id="serviceAreas">
-                <span class="service-area-tag">Contact admin to set up</span>
+            <div class="service-tags" id="serviceAreas">
+                <span class="service-tag">Contact admin to set up</span>
             </div>
         </div>
     </div>
@@ -853,9 +940,7 @@
                 <h3>Job Details</h3>
                 <button class="modal-close" onclick="closeJobModal()">&times;</button>
             </div>
-            <div class="modal-body" id="jobModalBody">
-                <!-- Filled by JS -->
-            </div>
+            <div class="modal-body" id="jobModalBody"></div>
         </div>
     </div>
 
@@ -949,10 +1034,7 @@
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.add('active');
-            document.getElementById('welcomeMsg').textContent = `Welcome, ${currentWorker.name}`;
-            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', month: 'long', day: 'numeric' 
-            });
+            document.getElementById('welcomeMsg').textContent = currentWorker.name;
         }
 
         // ===== TABS =====
@@ -980,7 +1062,7 @@
                 if (currentJobs.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
-                            <p>No active jobs</p>
+                            <p style="font-size: 16px; color: var(--gray-600);">No active jobs</p>
                             <p>Check back later for new assignments</p>
                         </div>
                     `;
@@ -996,22 +1078,22 @@
                             </div>
                             <span class="status-badge status-${job.status}">${formatStatus(job.status)}</span>
                         </div>
-                        <div class="job-details">
-                            <div>
-                                <div class="job-detail-label">Date</div>
-                                <div class="job-detail-value">${formatDate(job.scheduled_date)}</div>
+                        <div class="job-grid">
+                            <div class="job-grid-item">
+                                <label>Date</label>
+                                <value>${formatDate(job.scheduled_date)}</value>
                             </div>
-                            <div>
-                                <div class="job-detail-label">Time</div>
-                                <div class="job-detail-value">${job.scheduled_time || 'TBD'}</div>
+                            <div class="job-grid-item">
+                                <label>Time</label>
+                                <value>${job.scheduled_time || 'TBD'}</value>
                             </div>
-                            <div>
-                                <div class="job-detail-label">Sq Ft</div>
-                                <div class="job-detail-value">${job.sq_footage ? job.sq_footage.toLocaleString() : '-'}</div>
+                            <div class="job-grid-item">
+                                <label>Sq Ft</label>
+                                <value>${job.sq_footage ? job.sq_footage.toLocaleString() : '-'}</value>
                             </div>
-                            <div>
-                                <div class="job-detail-label">Your Pay</div>
-                                <div class="job-detail-value job-payout">${formatCurrency(job.price_worker)}</div>
+                            <div class="job-grid-item">
+                                <label>Your Pay</label>
+                                <value class="job-payout">${formatCurrency(job.price_worker)}</value>
                             </div>
                         </div>
                     </div>
@@ -1032,70 +1114,70 @@
                     <div class="card-title" style="font-size: 18px;">${selectedJob.address || 'TBD'}</div>
                     <div class="card-subtitle">${selectedJob.city || ''}, ${selectedJob.state || 'NJ'} ${selectedJob.zip || ''}</div>
                     <a href="https://maps.google.com/?q=${encodeURIComponent(selectedJob.address + ', ' + selectedJob.city + ', ' + selectedJob.state)}" 
-                       target="_blank" style="color: #f97316; font-size: 14px; text-decoration: none;">
-                       Get Directions
+                       target="_blank" class="link-orange" style="font-size: 14px; display: inline-block; margin-top: 8px;">
+                       Get Directions &rarr;
                     </a>
                 </div>
                 
-                <div class="job-details" style="border-top: none; padding-top: 0;">
-                    <div>
-                        <div class="job-detail-label">Date</div>
-                        <div class="job-detail-value">${formatDate(selectedJob.scheduled_date)}</div>
+                <div class="job-grid" style="border-top: none; padding-top: 0;">
+                    <div class="job-grid-item">
+                        <label>Date</label>
+                        <value>${formatDate(selectedJob.scheduled_date)}</value>
                     </div>
-                    <div>
-                        <div class="job-detail-label">Time</div>
-                        <div class="job-detail-value">${selectedJob.scheduled_time || 'TBD'}</div>
+                    <div class="job-grid-item">
+                        <label>Time</label>
+                        <value>${selectedJob.scheduled_time || 'TBD'}</value>
                     </div>
-                    <div>
-                        <div class="job-detail-label">Job Type</div>
-                        <div class="job-detail-value">${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</div>
+                    <div class="job-grid-item">
+                        <label>Job Type</label>
+                        <value>${formatStatus(selectedJob.job_type || selectedJob.service_type || 'Cleanup')}</value>
                     </div>
-                    <div>
-                        <div class="job-detail-label">Your Pay</div>
-                        <div class="job-detail-value job-payout">${formatCurrency(selectedJob.price_worker)}</div>
+                    <div class="job-grid-item">
+                        <label>Your Pay</label>
+                        <value class="job-payout">${formatCurrency(selectedJob.price_worker)}</value>
                     </div>
                 </div>
                 
                 ${selectedJob.special_instructions ? `
-                    <div style="margin-top: 16px;">
-                        <div class="job-detail-label">Instructions</div>
-                        <div style="background: #222; padding: 12px; border-radius: 8px; margin-top: 6px; font-size: 14px;">
+                    <div style="margin-top: 20px;">
+                        <label class="form-label">Instructions</label>
+                        <div style="background: var(--gray-50); padding: 14px; border-radius: 8px; font-size: 14px; color: var(--gray-700);">
                             ${selectedJob.special_instructions}
                         </div>
                     </div>
                 ` : ''}
                 
-                <div class="timer-box">
+                <div class="timer-card">
                     <div class="timer-display" id="timerDisplay">${formatTimer(timerSeconds)}</div>
                     <div class="timer-label">Job Timer</div>
-                    <button class="timer-btn" onclick="toggleTimer()">${timerRunning ? 'Pause' : 'Start Timer'}</button>
+                    <button class="btn btn-secondary timer-btn" onclick="toggleTimer()">${timerRunning ? 'Pause' : 'Start Timer'}</button>
                 </div>
                 
-                <div class="checklist">
-                    <div class="checklist-title">Completion Checklist</div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checklist-checkbox"></div>
-                        <div class="checklist-text">Take before photos</div>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checklist-checkbox"></div>
-                        <div class="checklist-text">Document any pre-existing damage</div>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checklist-checkbox"></div>
-                        <div class="checklist-text">Complete all cleaning tasks</div>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checklist-checkbox"></div>
-                        <div class="checklist-text">Take after photos</div>
-                    </div>
-                    <div class="checklist-item" onclick="toggleChecklist(this)">
-                        <div class="checklist-checkbox"></div>
-                        <div class="checklist-text">Final walkthrough</div>
-                    </div>
+                <div class="section-title">Completion Checklist</div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-text">Take before photos</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-text">Document any pre-existing damage</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-text">Complete all cleaning tasks</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-text">Take after photos</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox"></div>
+                    <div class="checklist-text">Final walkthrough</div>
                 </div>
                 
-                ${getJobActions(selectedJob)}
+                <div style="margin-top: 24px;">
+                    ${getJobActions(selectedJob)}
+                </div>
             `;
 
             document.getElementById('jobModal').classList.add('show');
@@ -1110,11 +1192,11 @@
             switch(job.status) {
                 case 'scheduled':
                 case 'dispatched':
-                    return `<button class="btn btn-primary" onclick="startJob(${job.id})">Start Job</button>`;
+                    return `<button class="btn btn-primary btn-block" onclick="startJob(${job.id})">Start Job</button>`;
                 case 'in_progress':
-                    return `<button class="btn btn-success" onclick="completeJob(${job.id})">Mark Complete</button>`;
+                    return `<button class="btn btn-success btn-block" onclick="completeJob(${job.id})">Mark Complete</button>`;
                 case 'pending_verification':
-                    return `<p style="text-align: center; color: #eab308; margin-top: 16px;">Waiting for admin verification</p>`;
+                    return `<p style="text-align: center; color: var(--orange); font-weight: 500;">Waiting for admin verification</p>`;
                 default:
                     return '';
             }
@@ -1188,7 +1270,6 @@
 
         // ===== PHOTOS =====
         function uploadPhoto(type) {
-            // TODO: Integrate with Cloudinary
             showToast('Photo upload coming soon');
         }
 
@@ -1244,11 +1325,10 @@
                     
                     if (w.counties_served && w.counties_served.length > 0) {
                         document.getElementById('serviceAreas').innerHTML = w.counties_served.map(c => 
-                            `<span class="service-area-tag">${c}</span>`
+                            `<span class="service-tag">${c}</span>`
                         ).join('');
                     }
                     
-                    // Document status
                     if (w.drivers_license_url) {
                         document.getElementById('dlStatus').textContent = 'Uploaded';
                         document.getElementById('dlStatus').className = 'document-status verified';
@@ -1310,7 +1390,6 @@
         }
 
         function uploadDocument(type) {
-            // TODO: Integrate with Cloudinary
             showToast('Document upload coming soon');
         }
 
