@@ -999,7 +999,7 @@
         }
 
         function getJobActions(j) {
-            if (j.status === 'scheduled' || j.status === 'dispatched') {
+            if (j.status === 'dispatched' || j.status === 'confirmed') {
                 return '<button class="btn btn-primary btn-block" onclick="startJob('+j.id+')">Start Job</button>';
             } else if (j.status === 'in_progress') {
                 return '<button class="btn btn-success btn-block" onclick="completeJob('+j.id+')">Mark Complete</button>';
