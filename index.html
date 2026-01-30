@@ -807,6 +807,7 @@
         let currentUploadType = null;
         let currentDocType = null;
         let timerInterval = null;
+        let authToken = localStorage.getItem('crew_token') || null;
         let timerSeconds = 0;
 
         // Utilities
@@ -815,6 +816,16 @@
             t.textContent = msg;
             t.className = 'toast show ' + type;
             setTimeout(() => t.className = 'toast', 3000);
+        }
+
+        function authFetch(url, options = {}) {
+            if (authToken) {
+                options.headers = options.headers || {};
+                if (typeof options.headers === 'object' && !Array.isArray(options.headers)) {
+                    options.headers['Authorization'] = 'Bearer ' + authToken;
+                }
+            }
+            return fetch(url, options);
         }
 
         function formatCurrency(amt) {
@@ -859,6 +870,8 @@
                 if (data.success) {
                     currentWorker = { id: data.worker_id, name: data.name };
                     localStorage.setItem('crew_worker', JSON.stringify(currentWorker));
+                    authToken = data.authToken;
+                    localStorage.setItem('crew_token', authToken);
                     showMainApp();
                     loadJobs();
                     loadProfile();
@@ -874,6 +887,8 @@
 
         function logout() {
             localStorage.removeItem('crew_worker');
+            localStorage.removeItem('crew_token');
+            authToken = null;
             currentWorker = null;
             document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hidden');
@@ -902,7 +917,7 @@
         async function loadJobs() {
             const container = document.getElementById('jobsList');
             try {
-                const res = await fetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
+                const res = await authFetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await res.json();
                 currentJobs = data.jobs || [];
                 
@@ -999,7 +1014,7 @@
 
         async function startJob(id) {
             try {
-                const res = await fetch(`${API_BASE}/crew/start-job`, {
+                const res = await authFetch(`${API_BASE}/crew/start-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ job_id: id, crew_id: currentWorker.id })
@@ -1019,7 +1034,7 @@
 
         async function completeJob(id) {
             try {
-                const res = await fetch(`${API_BASE}/crew/complete-job`, {
+                const res = await authFetch(`${API_BASE}/crew/complete-job`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ job_id: id, crew_id: currentWorker.id })
@@ -1048,7 +1063,7 @@
             formData.append('file', file);
             
             try {
-                const res = await fetch(`https://${XANO_INSTANCE}/api:O_MQ1nmN/upload/file`, {
+                const res = await authFetch(`https://${XANO_INSTANCE}/api:O_MQ1nmN/upload/file`, {
                     method: 'POST',
                     body: formData
                 });
@@ -1098,7 +1113,7 @@
                 const fileUrl = await uploadToXano(file);
                 
                 // Save to job_photos
-                const res = await fetch(`${API_BASE}/worker/upload-photo`, {
+                const res = await authFetch(`${API_BASE}/worker/upload-photo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1143,7 +1158,7 @@
             try {
                 const fileUrl = await uploadToXano(file);
                 
-                const res = await fetch(`${API_BASE}/worker/upload-photo`, {
+                const res = await authFetch(`${API_BASE}/worker/upload-photo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1200,7 +1215,7 @@
             try {
                 const fileUrl = await uploadToXano(file);
                 
-                const res = await fetch(`${API_BASE}/crew/upload-document`, {
+                const res = await authFetch(`${API_BASE}/crew/upload-document`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1228,7 +1243,7 @@
         // Earnings
         async function loadEarnings() {
             try {
-                const res = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const res = await authFetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await res.json();
                 const jobs = data.jobs || [];
                 const completed = jobs.filter(j => ['completed','verified','paid'].includes(j.status));
@@ -1258,7 +1273,7 @@
         // Profile
         async function loadProfile() {
             try {
-                const res = await fetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
+                const res = await authFetch(`${API_BASE}/worker/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await res.json();
                 
                 if (data.worker) {
@@ -1320,7 +1335,7 @@
 
         async function saveProfile() {
             try {
-                const res = await fetch(`${API_BASE}/crew/save-profile`, {
+                const res = await authFetch(`${API_BASE}/crew/save-profile`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1338,7 +1353,7 @@
 
         async function saveHomeAddress() {
             try {
-                const res = await fetch(`${API_BASE}/crew/save-address`, {
+                const res = await authFetch(`${API_BASE}/crew/save-address`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1358,7 +1373,7 @@
 
         async function saveCompanyInfo() {
             try {
-                const res = await fetch(`${API_BASE}/crew/save-company`, {
+                const res = await authFetch(`${API_BASE}/crew/save-company`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
