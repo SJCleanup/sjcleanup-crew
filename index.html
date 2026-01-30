@@ -1092,22 +1092,47 @@
 
         // Photo/Video Upload
         function uploadPhoto(type) {
-            if (!selectedJob && currentJobs.length === 0) {
-                showToast('No active job - photos will be saved when you have a job', 'error');
+            if (currentJobs.length === 0) {
+                showToast('No active jobs - cannot upload photos', 'error');
                 return;
             }
             currentUploadType = type;
-            currentJobId = selectedJob?.id || currentJobs[0]?.id;
+            // Use selected job from modal, or if only one job use that, otherwise prompt
+            if (selectedJob) {
+                currentJobId = selectedJob.id;
+            } else if (currentJobs.length === 1) {
+                currentJobId = currentJobs[0].id;
+            } else {
+                const activeJobs = currentJobs.filter(j => ['dispatched', 'confirmed', 'in_progress'].includes(j.status));
+                if (activeJobs.length === 1) {
+                    currentJobId = activeJobs[0].id;
+                } else {
+                    showToast('Please open a job first to upload photos for it', 'error');
+                    return;
+                }
+            }
             document.getElementById('photoInput').click();
         }
 
         function uploadVideo(type) {
-            if (!selectedJob && currentJobs.length === 0) {
-                showToast('No active job - videos will be saved when you have a job', 'error');
+            if (currentJobs.length === 0) {
+                showToast('No active jobs - cannot upload videos', 'error');
                 return;
             }
             currentUploadType = type + '_video';
-            currentJobId = selectedJob?.id || currentJobs[0]?.id;
+            if (selectedJob) {
+                currentJobId = selectedJob.id;
+            } else if (currentJobs.length === 1) {
+                currentJobId = currentJobs[0].id;
+            } else {
+                const activeJobs = currentJobs.filter(j => ['dispatched', 'confirmed', 'in_progress'].includes(j.status));
+                if (activeJobs.length === 1) {
+                    currentJobId = activeJobs[0].id;
+                } else {
+                    showToast('Please open a job first to upload videos for it', 'error');
+                    return;
+                }
+            }
             document.getElementById('videoInput').click();
         }
 
