@@ -980,7 +980,9 @@
 
             // Save current timer to previous job, then restore this job's timer
             if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-            timerSeconds = jobTimers[id] || 0;
+            timerSeconds = jobTimers[id] || selectedJob.timer_seconds || 0;
+            // Load persisted checklist state (array of booleans)
+            const savedChecklist = selectedJob.checklist_state || [false,false,false,false,false,false];
 
             const body = document.getElementById('jobModalBody');
             body.innerHTML = `
@@ -1002,12 +1004,7 @@
                     <button class="btn btn-secondary" style="margin-top:12px;" onclick="toggleTimer()">${timerInterval ? 'Pause' : 'Start Timer'}</button>
                 </div>
                 <div class="section-title">Completion Checklist</div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Record before video walkthrough</span></div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Take at least 4 before photos</span></div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Document any pre-existing damage</span></div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Complete all cleaning tasks</span></div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Take at least 4 after photos</span></div>
-                <div class="checklist-item" onclick="this.querySelector('.checklist-checkbox').classList.toggle('checked')"><div class="checklist-checkbox"></div><span>Record after video walkthrough</span></div>
+                ${['Record before video walkthrough','Take at least 4 before photos','Document any pre-existing damage','Complete all cleaning tasks','Take at least 4 after photos','Record after video walkthrough'].map((label, i) => `<div class="checklist-item" onclick="toggleChecklist(${i})"><div class="checklist-checkbox${savedChecklist[i] ? ' checked' : ''}" data-index="${i}"></div><span>${label}</span></div>`).join('\n                ')}
                 <div style="margin-top:24px;">${getJobActions(selectedJob)}</div>
             `;
             document.getElementById('jobModal').classList.add('show');
@@ -1017,6 +1014,7 @@
             // Save timer state for this job before closing
             if (selectedJob) {
                 jobTimers[selectedJob.id] = timerSeconds;
+                saveTimer();
             }
             if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
             document.getElementById('jobModal').classList.remove('show');
@@ -1038,6 +1036,7 @@
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
+                saveTimer();
             } else {
                 timerInterval = setInterval(() => {
                     timerSeconds++;
@@ -1046,6 +1045,42 @@
                     if (el) el.textContent = formatTimer(timerSeconds);
                 }, 1000);
             }
+        }
+
+        function toggleChecklist(index) {
+            const cb = document.querySelector(`.checklist-checkbox[data-index="${index}"]`);
+            if (!cb) return;
+            cb.classList.toggle('checked');
+            saveChecklist();
+        }
+
+        async function saveChecklist() {
+            if (!selectedJob) return;
+            const states = [];
+            for (let i = 0; i < 6; i++) {
+                const cb = document.querySelector(`.checklist-checkbox[data-index="${i}"]`);
+                states.push(cb ? cb.classList.contains('checked') : false);
+            }
+            selectedJob.checklist_state = states;
+            try {
+                await authFetch(`${API_BASE}/crew/save-checklist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_id: selectedJob.id, checklist_state: states })
+                });
+            } catch (e) { /* silent */ }
+        }
+
+        async function saveTimer() {
+            if (!selectedJob || timerSeconds === 0) return;
+            selectedJob.timer_seconds = timerSeconds;
+            try {
+                await authFetch(`${API_BASE}/crew/save-timer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_id: selectedJob.id, timer_seconds: timerSeconds })
+                });
+            } catch (e) { /* silent */ }
         }
 
         async function startJob(id) {
