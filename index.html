@@ -830,6 +830,87 @@
         let timerSeconds = 0;
         let jobTimers = {}; // Per-job timer state: { jobId: seconds }
 
+        // EXIF GPS extractor (no external library)
+        function extractGPS(file) {
+            return new Promise(resolve => {
+                if (!file || !file.type.startsWith('image/jpeg')) return resolve({ lat: 0, lng: 0 });
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const view = new DataView(e.target.result);
+                        if (view.getUint16(0) !== 0xFFD8) return resolve({ lat: 0, lng: 0 });
+                        let offset = 2;
+                        while (offset < view.byteLength - 1) {
+                            const marker = view.getUint16(offset);
+                            if (marker === 0xFFE1) { // APP1 (EXIF)
+                                const len = view.getUint16(offset + 2);
+                                const exifData = parseExifGPS(view, offset + 4, len);
+                                return resolve(exifData);
+                            }
+                            if ((marker & 0xFF00) !== 0xFF00) break;
+                            offset += 2 + view.getUint16(offset + 2);
+                        }
+                        resolve({ lat: 0, lng: 0 });
+                    } catch (_) { resolve({ lat: 0, lng: 0 }); }
+                };
+                reader.onerror = () => resolve({ lat: 0, lng: 0 });
+                reader.readAsArrayBuffer(file.slice(0, 128 * 1024)); // Read first 128KB only
+            });
+        }
+
+        function parseExifGPS(view, start, length) {
+            const result = { lat: 0, lng: 0 };
+            try {
+                // Check "Exif\0\0" header
+                if (view.getUint32(start) !== 0x45786966) return result;
+                const tiffStart = start + 6;
+                const le = view.getUint16(tiffStart) === 0x4949; // Little-endian?
+                const g16 = (o) => le ? view.getUint16(o, true) : view.getUint16(o);
+                const g32 = (o) => le ? view.getUint32(o, true) : view.getUint32(o);
+
+                // Read IFD0 to find GPS IFD pointer
+                let ifdOffset = tiffStart + g32(tiffStart + 4);
+                const entries = g16(ifdOffset);
+                let gpsIFDOffset = 0;
+                for (let i = 0; i < entries; i++) {
+                    const tag = g16(ifdOffset + 2 + i * 12);
+                    if (tag === 0x8825) { // GPSInfoIFDPointer
+                        gpsIFDOffset = tiffStart + g32(ifdOffset + 2 + i * 12 + 8);
+                        break;
+                    }
+                }
+                if (!gpsIFDOffset) return result;
+
+                // Parse GPS IFD
+                const gpsEntries = g16(gpsIFDOffset);
+                let latRef = 'N', lngRef = 'E', latVals = null, lngVals = null;
+                for (let i = 0; i < gpsEntries; i++) {
+                    const eOffset = gpsIFDOffset + 2 + i * 12;
+                    const tag = g16(eOffset);
+                    const valOffset = tiffStart + g32(eOffset + 8);
+                    if (tag === 1) latRef = String.fromCharCode(view.getUint8(eOffset + 8)); // GPSLatitudeRef
+                    if (tag === 3) lngRef = String.fromCharCode(view.getUint8(eOffset + 8)); // GPSLongitudeRef
+                    if (tag === 2) latVals = readRationals(view, valOffset, 3, le); // GPSLatitude
+                    if (tag === 4) lngVals = readRationals(view, valOffset, 3, le); // GPSLongitude
+                }
+                if (latVals && lngVals) {
+                    result.lat = (latVals[0] + latVals[1] / 60 + latVals[2] / 3600) * (latRef === 'S' ? -1 : 1);
+                    result.lng = (lngVals[0] + lngVals[1] / 60 + lngVals[2] / 3600) * (lngRef === 'W' ? -1 : 1);
+                }
+            } catch (_) {}
+            return result;
+        }
+
+        function readRationals(view, offset, count, le) {
+            const vals = [];
+            for (let i = 0; i < count; i++) {
+                const num = le ? view.getUint32(offset + i * 8, true) : view.getUint32(offset + i * 8);
+                const den = le ? view.getUint32(offset + i * 8 + 4, true) : view.getUint32(offset + i * 8 + 4);
+                vals.push(den ? num / den : 0);
+            }
+            return vals;
+        }
+
         // Utilities
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
@@ -1203,14 +1284,15 @@
             showToast('Uploading photo...');
             
             try {
-                // Get GPS from image if available
-                let lat = 0, lng = 0;
-                
+                // Extract GPS from EXIF data if available
+                const gps = await extractGPS(file);
+                let lat = gps.lat, lng = gps.lng;
+
                 // Upload to Xano
                 const fileUrl = await uploadToXano(file);
                 
                 // Save to job_photos
-                const res = await authFetch(`${API_BASE}/worker/upload-photo`, {
+                const res = await authFetch(`${API_BASE}/crew/upload-photo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1256,7 +1338,7 @@
             try {
                 const fileUrl = await uploadToXano(file);
                 
-                const res = await authFetch(`${API_BASE}/worker/upload-photo`, {
+                const res = await authFetch(`${API_BASE}/crew/upload-photo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1372,12 +1454,20 @@
         // Earnings
         async function loadEarnings() {
             try {
+                // Update Stripe card based on worker status
+                const stripeEl = document.getElementById('stripeSetup');
+                if (currentWorker.stripe_connect_status === 'active' || currentWorker.stripe_connect_status === 'complete') {
+                    stripeEl.innerHTML = `<h3>Direct Deposit Connected</h3><p style="color:var(--green);">Your Stripe account is active. Payouts will be sent automatically.</p>`;
+                } else if (currentWorker.stripe_connect_id && currentWorker.stripe_connect_status === 'onboarding') {
+                    stripeEl.innerHTML = `<h3>Finish Setting Up Direct Deposit</h3><p>You started connecting your bank account but haven't finished yet.</p><button class="btn btn-primary" onclick="setupStripe()">Continue Setup</button>`;
+                }
+
                 const res = await authFetch(`${API_BASE}/crew/my-jobs?worker_id=${currentWorker.id}`);
                 const data = await res.json();
                 const jobs = data.jobs || [];
                 const completed = jobs.filter(j => ['completed','verified','paid'].includes(j.status));
                 const total = completed.reduce((s, j) => s + (j.price_worker || 0), 0);
-                
+
                 document.getElementById('totalEarnings').textContent = formatCurrency(total);
                 
                 const hist = document.getElementById('paymentHistory');
@@ -1522,8 +1612,26 @@
             }
         }
 
-        function setupStripe() {
-            showToast('Stripe Connect setup coming soon');
+        async function setupStripe() {
+            showToast('Setting up Stripe Connect...');
+            try {
+                const res = await authFetch(`${API_BASE}/crew/stripe-onboard`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        return_url: window.location.href,
+                        refresh_url: window.location.href
+                    })
+                });
+                const data = await res.json();
+                if (data.onboarding_url) {
+                    window.location.href = data.onboarding_url;
+                } else {
+                    showToast(data.message || 'Failed to start Stripe setup', 'error');
+                }
+            } catch (e) {
+                showToast('Connection error - please try again', 'error');
+            }
         }
 
         // Init
