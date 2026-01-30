@@ -523,6 +523,24 @@
 
         /* File Input Hidden */
         .file-input { display: none; }
+
+        /* Availability Schedule */
+        .availability-grid { display: grid; gap: 8px; }
+        .avail-day { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+        .avail-day label { width: 90px; font-size: 13px; font-weight: 600; color: var(--gray-700); }
+        .avail-toggle { width: 40px; height: 22px; background: var(--gray-300); border-radius: 11px; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+        .avail-toggle.on { background: var(--green); }
+        .avail-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: white; border-radius: 50%; transition: transform 0.2s; }
+        .avail-toggle.on::after { transform: translateX(18px); }
+        .avail-times { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--gray-500); }
+        .avail-times select { padding: 4px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 12px; }
+        .avail-times.disabled { opacity: 0.3; pointer-events: none; }
+        .blocked-dates { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .blocked-date { display: flex; align-items: center; gap: 4px; background: var(--red-bg, #fef2f2); color: var(--red, #dc2626); padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+        .blocked-date button { background: none; border: none; color: var(--red, #dc2626); cursor: pointer; font-size: 14px; padding: 0; }
+        .add-blocked-date { display: flex; gap: 8px; margin-top: 8px; }
+        .add-blocked-date input { flex: 1; padding: 6px 10px; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 13px; }
+        .max-jobs-input { width: 60px; padding: 6px; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 13px; text-align: center; }
     </style>
 </head>
 <body>
@@ -794,6 +812,24 @@
             <div class="section-title">Service Areas</div>
             <div class="service-tags" id="serviceAreas">
                 <span class="service-tag">Contact admin to set up</span>
+            </div>
+
+            <!-- Availability Schedule -->
+            <div class="section-title" style="margin-top: 24px;">Weekly Availability</div>
+            <div class="availability-grid" id="availabilityGrid"></div>
+            <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; color: var(--gray-600);">Max jobs per day:</span>
+                <input type="number" class="max-jobs-input" id="maxJobsPerDay" min="1" max="10" value="2">
+            </div>
+            <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="saveAvailability()">Save Availability</button>
+
+            <!-- Blocked Dates -->
+            <div class="section-title" style="margin-top: 24px;">Blocked Dates</div>
+            <p style="font-size: 12px; color: var(--gray-500); margin-bottom: 8px;">Mark specific dates you cannot work</p>
+            <div class="blocked-dates" id="blockedDates"></div>
+            <div class="add-blocked-date">
+                <input type="date" id="newBlockedDate">
+                <button class="btn btn-sm btn-secondary" onclick="addBlockedDate()">Block Date</button>
             </div>
         </div>
     </div>
@@ -1547,6 +1583,8 @@
                         document.getElementById('w9Status').className = 'document-status verified';
                     }
                 }
+                // Load availability schedule
+                loadAvailability();
             } catch (e) {
                 console.error(e);
             }
@@ -1568,6 +1606,123 @@
             } catch (e) {
                 showToast('Connection error', 'error');
             }
+        }
+
+        // --- Availability & Scheduling ---
+        const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+        const DAY_LABELS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        let crewAvailability = {};
+        let blockedDates = [];
+
+        function timeOptions() {
+            let opts = '';
+            for (let h = 5; h <= 21; h++) {
+                const hh = String(h).padStart(2, '0');
+                opts += `<option value="${hh}:00">${h > 12 ? (h-12) : h}:00 ${h >= 12 ? 'PM' : 'AM'}</option>`;
+                opts += `<option value="${hh}:30">${h > 12 ? (h-12) : h}:30 ${h >= 12 ? 'PM' : 'AM'}</option>`;
+            }
+            opts += `<option value="22:00">10:00 PM</option>`;
+            return opts;
+        }
+
+        function renderAvailabilityGrid() {
+            const grid = document.getElementById('availabilityGrid');
+            const opts = timeOptions();
+            grid.innerHTML = DAYS.map((day, i) => {
+                const d = crewAvailability[day] || { available: true, start: '08:00', end: '17:00' };
+                const on = d.available !== false;
+                return `<div class="avail-day">
+                    <label>${DAY_LABELS[i]}</label>
+                    <div class="avail-toggle ${on ? 'on' : ''}" data-day="${day}" onclick="toggleDay('${day}')"></div>
+                    <div class="avail-times ${on ? '' : 'disabled'}" id="times_${day}">
+                        <select id="start_${day}" onchange="updateAvail('${day}')">${opts}</select>
+                        <span>to</span>
+                        <select id="end_${day}" onchange="updateAvail('${day}')">${opts}</select>
+                    </div>
+                </div>`;
+            }).join('');
+            // Set selected values
+            DAYS.forEach(day => {
+                const d = crewAvailability[day] || { available: true, start: '08:00', end: '17:00' };
+                const startSel = document.getElementById(`start_${day}`);
+                const endSel = document.getElementById(`end_${day}`);
+                if (startSel) startSel.value = d.start || '08:00';
+                if (endSel) endSel.value = d.end || '17:00';
+            });
+        }
+
+        function toggleDay(day) {
+            const d = crewAvailability[day] || { available: true, start: '08:00', end: '17:00' };
+            d.available = !d.available;
+            crewAvailability[day] = d;
+            renderAvailabilityGrid();
+        }
+
+        function updateAvail(day) {
+            crewAvailability[day] = crewAvailability[day] || {};
+            crewAvailability[day].start = document.getElementById(`start_${day}`).value;
+            crewAvailability[day].end = document.getElementById(`end_${day}`).value;
+            crewAvailability[day].available = crewAvailability[day].available !== false;
+        }
+
+        function renderBlockedDates() {
+            const el = document.getElementById('blockedDates');
+            if (!blockedDates.length) {
+                el.innerHTML = '<span style="font-size:12px;color:var(--gray-400);">No blocked dates</span>';
+                return;
+            }
+            el.innerHTML = blockedDates.sort().map(d =>
+                `<div class="blocked-date"><span>${d}</span><button onclick="removeBlockedDate('${d}')">×</button></div>`
+            ).join('');
+        }
+
+        function addBlockedDate() {
+            const input = document.getElementById('newBlockedDate');
+            const val = input.value;
+            if (!val) return showToast('Pick a date first', 'error');
+            if (blockedDates.includes(val)) return showToast('Date already blocked', 'error');
+            blockedDates.push(val);
+            input.value = '';
+            renderBlockedDates();
+            saveAvailability();
+        }
+
+        function removeBlockedDate(d) {
+            blockedDates = blockedDates.filter(bd => bd !== d);
+            renderBlockedDates();
+            saveAvailability();
+        }
+
+        async function loadAvailability() {
+            try {
+                const res = await authFetch(`${API_BASE}/crew/get-availability`);
+                const data = await res.json();
+                if (data.availability) crewAvailability = data.availability;
+                if (data.unavailable_dates) blockedDates = data.unavailable_dates;
+                document.getElementById('maxJobsPerDay').value = data.max_jobs_per_day || 2;
+                renderAvailabilityGrid();
+                renderBlockedDates();
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveAvailability() {
+            // Ensure all days have values
+            DAYS.forEach(day => {
+                if (!crewAvailability[day]) crewAvailability[day] = { available: true, start: '08:00', end: '17:00' };
+            });
+            try {
+                const res = await authFetch(`${API_BASE}/crew/set-availability`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        availability: crewAvailability,
+                        unavailable_dates: blockedDates,
+                        max_jobs_per_day: parseInt(document.getElementById('maxJobsPerDay').value) || 2
+                    })
+                });
+                const data = await res.json();
+                showToast(data.success ? 'Availability saved' : 'Failed to save', data.success ? 'success' : 'error');
+            } catch (e) { showToast('Connection error', 'error'); }
         }
 
         async function saveHomeAddress() {
