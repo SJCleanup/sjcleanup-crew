@@ -1133,6 +1133,7 @@
                 if (data.success) {
                     showToast('Photo uploaded successfully', 'success');
                     updatePhotoCount(currentUploadType);
+                    displayUploadedPhoto(currentUploadType, fileUrl);
                 } else {
                     showToast(data.message || 'Failed to save photo', 'error');
                 }
@@ -1198,6 +1199,37 @@
                     countEl.className = 'photo-count complete';
                 }
             }
+        }
+
+        function displayUploadedPhoto(type, fileUrl) {
+            const gridId = type + 'Photos';
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+
+            // Find the first empty placeholder (no img tag inside)
+            const placeholders = grid.querySelectorAll('.photo-item');
+            for (const item of placeholders) {
+                if (!item.querySelector('img')) {
+                    item.innerHTML = `<img src="${fileUrl}" alt="${type} photo">`;
+                    item.style.border = 'none';
+                    item.classList.remove('required');
+                    item.removeAttribute('onclick');
+                    return;
+                }
+            }
+
+            // All placeholders filled — add new photo element and a new upload slot
+            const newPhoto = document.createElement('div');
+            newPhoto.className = 'photo-item';
+            newPhoto.innerHTML = `<img src="${fileUrl}" alt="${type} photo">`;
+            newPhoto.style.border = 'none';
+            grid.appendChild(newPhoto);
+
+            const newSlot = document.createElement('div');
+            newSlot.className = 'photo-item';
+            newSlot.innerHTML = '+';
+            newSlot.onclick = () => uploadPhoto(type);
+            grid.appendChild(newSlot);
         }
 
         // Document Upload
