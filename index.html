@@ -809,6 +809,7 @@
         let timerInterval = null;
         let authToken = localStorage.getItem('crew_token') || null;
         let timerSeconds = 0;
+        let jobTimers = {}; // Per-job timer state: { jobId: seconds }
 
         // Utilities
         function showToast(msg, type = 'success') {
@@ -952,6 +953,10 @@
             selectedJob = currentJobs.find(j => j.id === id);
             if (!selectedJob) return;
 
+            // Save current timer to previous job, then restore this job's timer
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+            timerSeconds = jobTimers[id] || 0;
+
             const body = document.getElementById('jobModalBody');
             body.innerHTML = `
                 <div style="margin-bottom:20px;">
@@ -984,6 +989,11 @@
         }
 
         function closeJobModal() {
+            // Save timer state for this job before closing
+            if (selectedJob) {
+                jobTimers[selectedJob.id] = timerSeconds;
+            }
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
             document.getElementById('jobModal').classList.remove('show');
             selectedJob = null;
         }
@@ -1006,6 +1016,7 @@
             } else {
                 timerInterval = setInterval(() => {
                     timerSeconds++;
+                    if (selectedJob) jobTimers[selectedJob.id] = timerSeconds;
                     const el = document.getElementById('timerDisplay');
                     if (el) el.textContent = formatTimer(timerSeconds);
                 }, 1000);
@@ -1044,6 +1055,7 @@
                     showToast('Job completed - pending verification');
                     closeJobModal();
                     loadJobs();
+                    if (selectedJob) delete jobTimers[selectedJob.id];
                     timerSeconds = 0;
                     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
                 } else {
