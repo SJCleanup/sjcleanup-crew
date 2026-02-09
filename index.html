@@ -955,14 +955,62 @@
             setTimeout(() => t.className = 'toast', 3000);
         }
 
-        function authFetch(url, options = {}) {
+        // Enhanced authFetch with proper error handling
+        async function authFetch(url, options = {}) {
             if (authToken) {
                 options.headers = options.headers || {};
                 if (typeof options.headers === 'object' && !Array.isArray(options.headers)) {
                     options.headers['Authorization'] = 'Bearer ' + authToken;
                 }
             }
-            return fetch(url, options);
+
+            // Add timeout (15 seconds)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+            options.signal = controller.signal;
+
+            try {
+                const response = await fetch(url, options);
+                clearTimeout(timeoutId);
+
+                // Handle HTTP error statuses
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showToast('Session expired - please log in again', 'error');
+                        setTimeout(() => logout(), 1500);
+                        throw new Error('SESSION_EXPIRED');
+                    }
+                    if (response.status === 403) {
+                        throw new Error('You do not have permission for this action');
+                    }
+                    if (response.status === 404) {
+                        throw new Error('Resource not found');
+                    }
+                    if (response.status >= 500) {
+                        throw new Error('Server error - please try again later');
+                    }
+                    try {
+                        const errData = await response.json();
+                        throw new Error(errData.message || `Request failed (${response.status})`);
+                    } catch (e) {
+                        if (e.message !== 'SESSION_EXPIRED') {
+                            throw new Error(`Request failed (${response.status})`);
+                        }
+                        throw e;
+                    }
+                }
+
+                return response;
+            } catch (err) {
+                clearTimeout(timeoutId);
+                if (err.name === 'AbortError') {
+                    throw new Error('Request timed out - check your connection');
+                }
+                if (err.message === 'Failed to fetch' || err.message === 'NetworkError') {
+                    throw new Error('Network error - check your internet connection');
+                }
+                throw err;
+            }
         }
 
         function formatCurrency(amt) {
@@ -985,11 +1033,73 @@
             return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
         }
 
+        // Input validation utilities
+        const validators = {
+            required: (v) => v !== null && v !== undefined && v.toString().trim() !== '',
+            email: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+            phone: (v) => !v || /^[\d\s\-\(\)\+]{10,}$/.test(v.replace(/\D/g, '')),
+            zip: (v) => !v || /^\d{5}(-\d{4})?$/.test(v)
+        };
+
+        function validateForm(fields) {
+            let isValid = true;
+            let firstError = null;
+
+            fields.forEach(({ id, rules, label }) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const value = el.value;
+                let fieldValid = true;
+
+                rules.forEach(rule => {
+                    if (rule === 'required' && !validators.required(value)) fieldValid = false;
+                    else if (rule === 'email' && !validators.email(value)) fieldValid = false;
+                    else if (rule === 'phone' && !validators.phone(value)) fieldValid = false;
+                    else if (rule === 'zip' && !validators.zip(value)) fieldValid = false;
+                });
+
+                el.style.borderColor = fieldValid ? '' : '#ef4444';
+                if (!fieldValid) {
+                    isValid = false;
+                    if (!firstError) firstError = label || id;
+                }
+            });
+
+            if (!isValid && firstError) {
+                showToast(`Please check: ${firstError}`, 'error');
+            }
+            return isValid;
+        }
+
+        // Session timeout management (30 min inactivity)
+        const SESSION_TIMEOUT = 30 * 60 * 1000;
+        let sessionTimer = null;
+        let lastActivity = Date.now();
+
+        function resetSessionTimer() {
+            lastActivity = Date.now();
+            if (sessionTimer) clearTimeout(sessionTimer);
+            if (authToken) {
+                sessionTimer = setTimeout(() => {
+                    showToast('Session expired due to inactivity', 'error');
+                    setTimeout(() => logout(), 1500);
+                }, SESSION_TIMEOUT);
+            }
+        }
+
+        ['click', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, () => {
+                if (authToken && Date.now() - lastActivity > 60000) {
+                    resetSessionTimer();
+                }
+            }, { passive: true });
+        });
+
         // Login
         async function login() {
             const pin = document.getElementById('pinInput').value;
             const err = document.getElementById('loginError');
-            
+
             if (!pin || pin.length < 4) {
                 err.textContent = 'Please enter your PIN';
                 err.style.display = 'block';
@@ -1009,6 +1119,7 @@
                     localStorage.setItem('crew_worker', JSON.stringify(currentWorker));
                     authToken = data.authToken;
                     localStorage.setItem('crew_token', authToken);
+                    resetSessionTimer(); // Start session timer
                     showMainApp();
                     loadJobs();
                     loadProfile();
@@ -1726,6 +1837,11 @@
         }
 
         async function saveHomeAddress() {
+            const isValid = validateForm([
+                { id: 'homeZip', rules: ['zip'], label: 'ZIP Code' }
+            ]);
+            if (!isValid) return;
+
             try {
                 const res = await authFetch(`${API_BASE}/crew/save-address`, {
                     method: 'POST',
@@ -1746,6 +1862,12 @@
         }
 
         async function saveCompanyInfo() {
+            const isValid = validateForm([
+                { id: 'companyPhone', rules: ['phone'], label: 'Company Phone' },
+                { id: 'companyZip', rules: ['zip'], label: 'Company ZIP' }
+            ]);
+            if (!isValid) return;
+
             try {
                 const res = await authFetch(`${API_BASE}/crew/save-company`, {
                     method: 'POST',
