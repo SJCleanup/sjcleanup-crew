@@ -1598,12 +1598,29 @@
             e.target.value = '';
         }
 
+        // Check and update Stripe Connect status
+        async function checkStripeStatus() {
+            try {
+                const res = await authFetch(`${API_BASE}/crew/stripe-status`);
+                const data = await res.json();
+                if (data.success && data.stripe_connect_status) {
+                    currentWorker.stripe_connect_status = data.stripe_connect_status;
+                    currentWorker.stripe_connect_id = data.stripe_connect_id;
+                }
+            } catch (e) {
+                console.error('Error checking Stripe status:', e);
+            }
+        }
+
         // Earnings
         async function loadEarnings() {
             try {
+                // Check Stripe status from API (updates after returning from Stripe)
+                await checkStripeStatus();
+
                 // Update Stripe card based on worker status
                 const stripeEl = document.getElementById('stripeSetup');
-                if (currentWorker.stripe_connect_status === 'active' || currentWorker.stripe_connect_status === 'complete') {
+                if (currentWorker.stripe_connect_status === 'active' || currentWorker.stripe_connect_status === 'complete' || currentWorker.stripe_connect_status === 'pending') {
                     stripeEl.innerHTML = `<h3>Direct Deposit Connected</h3><p style="color:var(--green);">Your Stripe account is active. Payouts will be sent automatically.</p>`;
                 } else if (currentWorker.stripe_connect_id && currentWorker.stripe_connect_status === 'onboarding') {
                     stripeEl.innerHTML = `<h3>Finish Setting Up Direct Deposit</h3><p>You started connecting your bank account but haven't finished yet.</p><button class="btn btn-primary" onclick="setupStripe()">Continue Setup</button>`;
